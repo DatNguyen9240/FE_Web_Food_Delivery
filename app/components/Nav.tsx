@@ -5,12 +5,12 @@ const menu = [
   { label: "Tin mới", href: "/tin-moi" },
   {
     label: "Thực đơn",
-    href: "/menu",
+    href: "/products/category/an-sang",
     subMenu: [
-      { label: "Ăn sáng", href: "/menu/an-sang" },
-      { label: "Ăn trưa", href: "/menu/an-trua" },
-      { label: "Ăn tối", href: "/menu/an-toi" },
-      { label: "Ăn vặt", href: "/menu/an-vat" },
+      { label: "Ăn sáng", href: "/products/category/an-sang" },
+      { label: "Ăn trưa", href: "/products/category/an-trua" },
+      { label: "Ăn tối", href: "/products/category/an-toi" },
+      { label: "Ăn vặt", href: "/products/category/an-vat" },
     ],
   },
   { label: "Quán ăn", href: "/quan-an" },

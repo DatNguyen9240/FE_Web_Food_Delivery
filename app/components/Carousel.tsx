@@ -20,7 +20,7 @@ const HEIGHTS = {
   sm: 100,
   md: 220,
   lg: 369,
-  xl: 369,
+  xl: 500,
 } as const;
 
 type CarouselProps = {

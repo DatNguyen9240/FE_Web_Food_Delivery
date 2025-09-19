@@ -96,7 +96,7 @@ export const AddToCartButton: React.FC<{
     icon={<span className="text-xl mr-2">🛒</span>}
     onClick={onClick}
   >
-    Add To Cart
+    Thêm vào giỏ hàng
   </Button>
 );
 
@@ -129,7 +129,7 @@ export const WishlistButton: React.FC<{
     icon={<Heart className="w-3.5 h-3.5" strokeWidth={1} />}
     onClick={onClick}
   >
-    ADD TO WISHLIST
+    Thêm vào yêu thích
   </Button>
 );
 
@@ -231,17 +231,26 @@ export const PaginationButton: React.FC<ButtonProps> = (props) => (
   </Button>
 );
 
-export const SignUpButton = React.memo(function SignUpButton(props) {
-  return (
-    <Button
-      shape="roundedSquare"
-      size="md"
-      className="bg-black text-white font-semibold ml-4 px-6 py-2 text-base hover:bg-gray-900 transition-colors whitespace-nowrap"
-      {...props}
-    >
-      Đăng ký
-    </Button>
-  );
-});
+export const SignUpButton: React.FC<ButtonProps> = (props) => (
+  <Button
+    shape="roundedSquare"
+    size="md"
+    className="bg-black text-white font-semibold ml-4 px-6 py-2 text-base hover:bg-gray-900 transition-colors whitespace-nowrap"
+    {...props}
+  >
+    Đăng ký
+  </Button>
+);
+
+export const LoginButton: React.FC<ButtonProps> = (props) => (
+  <Button
+    shape="roundedSquare"
+    size="md"
+    className="bg-blue-600 text-white font-semibold px-6 py-2 text-base hover:bg-blue-700 transition-colors whitespace-nowrap"
+    {...props}
+  >
+    Đăng nhập
+  </Button>
+);
 
 export default Button;

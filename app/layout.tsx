@@ -13,8 +13,9 @@ const roboto = Roboto({
 });
 
 export const metadata: Metadata = {
-  title: "Bán quần áo nam nữ túi xách tại Bình Long",
-  description: "Bán quần áo nam nữ túi xách tại Bình Long",
+  title: "Dorfo - Website giao đồ ăn nhanh chóng tại kí túc xá khu B",
+  description:
+    "Dorfo - Nền tảng giao đồ ăn nhanh chóng và tiện lợi tại kí túc xá khu B",
 };
 
 export default function RootLayout({

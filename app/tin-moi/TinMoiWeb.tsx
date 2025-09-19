@@ -2,8 +2,7 @@
 import React from "react";
 
 const stories = [
-  { user: "Tin của bạn", img: "/images/story1.jpg" },
-  { user: "Ốc chi", img: "/images/story2.jpg" },
+  { user: "Ốc chi", img: "/sell_off/01.jpg" },
   { user: "Ngô Quyền", img: "/images/story3.jpg" },
   { user: "Hà anh", img: "/images/story4.jpg" },
 ];
@@ -11,8 +10,8 @@ const stories = [
 const posts = [
   {
     user: "Ốc chi",
-    avatar: "/images/story2.jpg",
-    img: "/images/spaghetti.jpg",
+    avatar: "/sell_off/01.jpg",
+    img: "/sell_off/01.jpg",
     title: "Mì Ý Sốt Cà Chua",
     time: "30 phút",
     left: "Còn 15 phần",
@@ -37,7 +36,7 @@ const posts = [
 
 const TinMoiWeb: React.FC = () => {
   return (
-    <div className="w-full max-w-4xl mx-auto bg-white min-h-screen pb-8">
+    <div className="w-full bg-white pb-8">
       {/* Stories */}
       <div className="flex gap-4 px-4 py-6 border-b border-gray-200 overflow-x-auto scrollbar-hide">
         {stories.map((story, idx) => (
@@ -49,7 +48,7 @@ const TinMoiWeb: React.FC = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <span className="text-xs mt-2 text-center truncate w-16">
+            <span className="text-xs mt-2 text-center truncate w-16 text-black">
               {story.user}
             </span>
           </div>
@@ -60,7 +59,7 @@ const TinMoiWeb: React.FC = () => {
         {posts.map((post, idx) => (
           <div
             key={idx}
-            className="bg-white rounded-xl shadow border border-gray-100 max-w-2xl mx-auto"
+            className="bg-white rounded-xl shadow border border-gray-100 max-w-2xl "
           >
             <div className="flex items-center px-4 pt-4 pb-2">
               <img
@@ -68,7 +67,7 @@ const TinMoiWeb: React.FC = () => {
                 alt={post.user}
                 className="w-10 h-10 rounded-full mr-3"
               />
-              <span className="font-semibold text-base flex-1">
+              <span className="font-semibold text-base flex-1 text-black">
                 {post.user}
               </span>
               <button className="text-gray-400 hover:text-gray-600 px-2">
@@ -82,7 +81,9 @@ const TinMoiWeb: React.FC = () => {
             />
             <div className="px-4 py-3">
               <div className="flex items-center gap-3 mb-2">
-                <span className="font-semibold text-lg">{post.title}</span>
+                <span className="font-semibold text-lg text-black">
+                  {post.title}
+                </span>
                 <span className="text-sm text-gray-500">{post.time}</span>
                 <span className="ml-auto text-xs bg-gray-100 rounded px-2 py-0.5 text-gray-700">
                   {post.left}

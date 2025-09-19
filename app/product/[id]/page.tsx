@@ -13,6 +13,8 @@ const featuredProducts = [
     inStock: true,
     image: "/sell_off/01.jpg",
     rating: 5,
+    distanceKm: 2.5, // thêm trường này
+    avgDeliveryMin: 25, // thêm trường này
   },
   {
     id: "f2",
@@ -23,6 +25,8 @@ const featuredProducts = [
     inStock: true,
     image: "/products/s24-ultra.jpg",
     rating: 5,
+    distanceKm: 3.2,
+    avgDeliveryMin: 30,
   },
   {
     id: "f3",
@@ -33,6 +37,8 @@ const featuredProducts = [
     inStock: true,
     image: "/products/macbook-air-m3.jpg",
     rating: 5,
+    distanceKm: 1.8,
+    avgDeliveryMin: 20,
   },
   {
     id: "f4",
@@ -43,6 +49,8 @@ const featuredProducts = [
     inStock: true,
     image: "/products/sony-xm5.jpg",
     rating: 5,
+    distanceKm: 4.0,
+    avgDeliveryMin: 35,
   },
   {
     id: "f5",
@@ -53,6 +61,8 @@ const featuredProducts = [
     inStock: true,
     image: "/products/apple-watch-6.jpg",
     rating: 5,
+    distanceKm: 2.0,
+    avgDeliveryMin: 28,
   },
   {
     id: "f6",
@@ -63,6 +73,8 @@ const featuredProducts = [
     inStock: true,
     image: "/products/apple-watch-6.jpg",
     rating: 5,
+    distanceKm: 2.0,
+    avgDeliveryMin: 28,
   },
   // Thêm 10 sản phẩm mới
   {
@@ -74,6 +86,8 @@ const featuredProducts = [
     inStock: true,
     image: "/products/oppo-reno-11.jpg",
     rating: 4,
+    distanceKm: 3.5,
+    avgDeliveryMin: 33,
   },
   {
     id: "f8",
@@ -84,6 +98,8 @@ const featuredProducts = [
     inStock: true,
     image: "/products/redmi-note-13.jpg",
     rating: 4,
+    distanceKm: 2.8,
+    avgDeliveryMin: 27,
   },
   {
     id: "f9",
@@ -94,6 +110,8 @@ const featuredProducts = [
     inStock: true,
     image: "/products/vivo-v30-pro.jpg",
     rating: 4,
+    distanceKm: 3.0,
+    avgDeliveryMin: 30,
   },
   {
     id: "f10",
@@ -104,6 +122,8 @@ const featuredProducts = [
     inStock: true,
     image: "/products/realme-12-pro.jpg",
     rating: 4,
+    distanceKm: 3.1,
+    avgDeliveryMin: 32,
   },
   {
     id: "f11",
@@ -114,6 +134,8 @@ const featuredProducts = [
     inStock: true,
     image: "/products/ipad-air-2024.jpg",
     rating: 5,
+    distanceKm: 1.5,
+    avgDeliveryMin: 22,
   },
   {
     id: "f12",
@@ -124,6 +146,8 @@ const featuredProducts = [
     inStock: true,
     image: "/products/macbook-pro-m3.jpg",
     rating: 5,
+    distanceKm: 2.2,
+    avgDeliveryMin: 26,
   },
   {
     id: "f13",
@@ -134,6 +158,8 @@ const featuredProducts = [
     inStock: true,
     image: "/products/tab-s9.jpg",
     rating: 5,
+    distanceKm: 1.9,
+    avgDeliveryMin: 24,
   },
   {
     id: "f14",
@@ -144,6 +170,8 @@ const featuredProducts = [
     inStock: true,
     image: "/products/airpods-pro-2.jpg",
     rating: 5,
+    distanceKm: 4.5,
+    avgDeliveryMin: 40,
   },
   {
     id: "f15",
@@ -154,6 +182,8 @@ const featuredProducts = [
     inStock: true,
     image: "/products/sony-wf-1000xm5.jpg",
     rating: 5,
+    distanceKm: 4.1,
+    avgDeliveryMin: 38,
   },
   {
     id: "f16",
@@ -164,6 +194,8 @@ const featuredProducts = [
     inStock: true,
     image: "/products/garmin-965.jpg",
     rating: 5,
+    distanceKm: 3.8,
+    avgDeliveryMin: 36,
   },
 ];
 export default function ProductPage({ params }: { params: { id: string } }) {
@@ -175,8 +207,8 @@ export default function ProductPage({ params }: { params: { id: string } }) {
       </div>
       <section className="max-w-[1300px] w-full mx-auto mt-12 overflow-hidden">
         <ProductsTitle
-          title="Sản phẩm thời trang"
-          description="Không thể bỏ qua những sản phẩm hot nhất!"
+          title="Món ăn liên quan"
+          description="Không thể bỏ lỡ những món ăn hấp dẫn này!"
         />
         <div className="px-4 mt-4">
           <ProductCarousel products={featuredProducts} />

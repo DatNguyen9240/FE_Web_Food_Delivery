@@ -4,8 +4,7 @@ import Logo from "./Logo";
 import SearchBar from "./SearchBar";
 import CartIcon from "./CartIcon";
 import Badge from "./Badge";
-import Hotline from "./Hotline";
-import { SignUpButton } from "./Button";
+import Button, { SignUpButton, LoginButton } from "./Button";
 import { useRouter } from "next/navigation";
 
 const Header = () => {
@@ -62,11 +61,11 @@ const Header = () => {
           </div>
 
           <div className="hidden lg:flex">
-            <Hotline phone="123456789" />
+            <LoginButton onClick={() => router.push("/login")} />
           </div>
 
           <div className="hidden lg:flex">
-            <SignUpButton />
+            <SignUpButton onClick={() => router.push("/signup")} />
           </div>
         </div>
       </div>
@@ -97,9 +96,14 @@ const Header = () => {
                 <path d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
-            <div className="flex items-center justify-center gap-4">
-              <Hotline phone="123456789" />
-              <SignUpButton />
+            <div className="flex items-center justify-center gap-1">
+              <LoginButton
+                onClick={() => {
+                  setOpenModal(false);
+                  router.push("/login");
+                }}
+              />
+              <SignUpButton onClick={() => router.push("/signup")} />
             </div>
           </div>
           <style>{`
