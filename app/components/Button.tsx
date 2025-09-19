@@ -246,7 +246,7 @@ export const LoginButton: React.FC<ButtonProps> = (props) => (
   <Button
     shape="roundedSquare"
     size="md"
-    className="bg-blue-600 text-white font-semibold px-6 py-2 text-base hover:bg-blue-700 transition-colors whitespace-nowrap"
+    className="bg-blue-600 text-white font-semibold px-4 py-2 text-base hover:bg-blue-700 transition-colors whitespace-nowrap"
     {...props}
   >
     Đăng nhập

@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 export default function AboutPage() {
   return (
     <div className="max-w-7xl mx-auto py-12 px-4">
@@ -10,10 +12,13 @@ export default function AboutPage() {
           cho sinh viên KTX khu B.
         </p>
         <div className="flex flex-col md:flex-row gap-8 items-center mb-8">
-          <img
+          <Image
             src="/logo/01.png"
             alt="Dorfo Logo"
+            width={128}
+            height={128}
             className="w-32 h-32 rounded-full shadow-md border-4 border-[#e2d8fa] bg-white object-cover"
+            priority
           />
           <div>
             <h2 className="text-xl font-semibold text-[#6c47c6] mb-2">

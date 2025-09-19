@@ -4,7 +4,7 @@ import Logo from "./Logo";
 import SearchBar from "./SearchBar";
 import CartIcon from "./CartIcon";
 import Badge from "./Badge";
-import Button, { SignUpButton, LoginButton } from "./Button";
+import { SignUpButton, LoginButton } from "./Button";
 import { useRouter } from "next/navigation";
 
 const Header = () => {

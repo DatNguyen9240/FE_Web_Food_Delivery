@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 
 const users = [
   {
@@ -121,10 +122,13 @@ export default function TinMoiLayout({
               key={idx}
               className="flex items-center gap-4 hover:bg-blue-100/60 rounded-lg px-2 py-2 transition group cursor-pointer"
             >
-              <img
+              <Image
                 src={user.avatar}
                 alt={user.fullname}
+                width={48}
+                height={48}
                 className="w-12 h-12 rounded-full object-cover border-2 border-blue-200 shadow-sm group-hover:scale-105 transition"
+                priority={idx < 5}
               />
               <div className="flex flex-col min-w-0">
                 <span className="font-semibold text-gray-900 truncate text-base group-hover:text-blue-700">

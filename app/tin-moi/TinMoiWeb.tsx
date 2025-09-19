@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Image from "next/image";
 
 const stories = [
   { user: "Ốc chi", img: "/sell_off/01.jpg" },
@@ -42,9 +43,11 @@ const TinMoiWeb: React.FC = () => {
         {stories.map((story, idx) => (
           <div key={idx} className="flex flex-col items-center min-w-[80px]">
             <div className="w-16 h-16 rounded-full border-2 border-orange-400 flex items-center justify-center overflow-hidden">
-              <img
+              <Image
                 src={story.img}
                 alt={story.user}
+                width={64}
+                height={64}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -62,9 +65,11 @@ const TinMoiWeb: React.FC = () => {
             className="bg-white rounded-xl shadow border border-gray-100 max-w-2xl "
           >
             <div className="flex items-center px-4 pt-4 pb-2">
-              <img
+              <Image
                 src={post.avatar}
                 alt={post.user}
+                width={40}
+                height={40}
                 className="w-10 h-10 rounded-full mr-3"
               />
               <span className="font-semibold text-base flex-1 text-black">
@@ -74,9 +79,11 @@ const TinMoiWeb: React.FC = () => {
                 ...
               </button>
             </div>
-            <img
+            <Image
               src={post.img}
               alt={post.title}
+              width={600}
+              height={320}
               className="w-full h-[320px] object-cover rounded-t-xl"
             />
             <div className="px-4 py-3">
