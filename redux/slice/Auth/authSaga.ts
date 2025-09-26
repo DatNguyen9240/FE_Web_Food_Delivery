@@ -26,10 +26,18 @@ import {
 
 function* loginSaga(action: PayloadAction<LoginRequest>): Generator {
   try {
-    const response = yield call(api.post, "/Auth/login", action.payload);
+    const response: { data: AuthResponse } = yield call(
+      api.post,
+      "/Auth/login",
+      action.payload
+    );
     yield put(loginSuccess(response.data));
-  } catch (error: any) {
-    yield put(loginFailure(error.response?.data?.message || "Login failed"));
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      yield put(loginFailure(error.message || "Login failed"));
+    } else {
+      yield put(loginFailure("Login failed"));
+    }
   }
 }
 
@@ -41,10 +49,12 @@ function* registerSaga(action: PayloadAction<RegisterRequest>): Generator {
       action.payload
     );
     yield put(registerSuccess(response.data));
-  } catch (error: any) {
-    yield put(
-      registerFailure(error.response?.data?.message || "Registration failed")
-    );
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      yield put(registerFailure(error.message || "Registration failed"));
+    } else {
+      yield put(registerFailure("Registration failed"));
+    }
   }
 }
 
@@ -52,8 +62,12 @@ function* logoutSaga(): Generator {
   try {
     yield call(api.post, "/Auth/logout");
     yield put(logoutSuccess());
-  } catch (error: any) {
-    yield put(logoutFailure(error.response?.data?.message || "Logout failed"));
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      yield put(logoutFailure(error.message || "Logout failed"));
+    } else {
+      yield put(logoutFailure("Logout failed"));
+    }
   }
 }
 
@@ -67,17 +81,21 @@ function* refreshTokenSaga(): Generator {
   try {
     const accessToken = getCookie("accessToken");
     const refreshToken = getCookie("refreshToken");
-    const response = yield call(api.post, "/auth/refresh", {
-      accessToken,
-      refreshToken,
-    });
-    yield put(refreshTokenSuccess(response.data));
-  } catch (error: any) {
-    yield put(
-      refreshTokenFailure(
-        error.response?.data?.message || "Token refresh failed"
-      )
+    const response: { data: AuthResponse } = yield call(
+      api.post,
+      "/auth/refresh",
+      {
+        accessToken,
+        refreshToken,
+      }
     );
+    yield put(refreshTokenSuccess(response.data));
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      yield put(refreshTokenFailure(error.message || "Token refresh failed"));
+    } else {
+      yield put(refreshTokenFailure("Token refresh failed"));
+    }
   }
 }
 
@@ -85,12 +103,14 @@ function* getCurrentUserSaga(): Generator {
   try {
     const response = yield call(api.get, "/auth/me");
     yield put(getCurrentUserSuccess(response.data));
-  } catch (error: any) {
-    yield put(
-      getCurrentUserFailure(
-        error.response?.data?.message || "Failed to get user info"
-      )
-    );
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      yield put(
+        getCurrentUserFailure(error.message || "Failed to get user info")
+      );
+    } else {
+      yield put(getCurrentUserFailure("Failed to get user info"));
+    }
   }
 }
 

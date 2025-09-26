@@ -2,7 +2,7 @@
 
 import ProductGrid from "@/components/ProductGrid";
 import ViewModeSwitcher from "@/components/ViewModeSwitcher";
-import { useGridMode } from "@/app/hooks/useGridMode";
+import { useGridMode } from "@/hooks/useGridMode";
 
 const newProducts = [
   {

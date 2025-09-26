@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import ProductGrid from "../../components/ProductGrid";
 import { X } from "lucide-react";
@@ -294,7 +295,9 @@ export default function QuanAnPage() {
           </select>
           <select
             value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as any)}
+            onChange={(e) =>
+              setSortBy(e.target.value as "name" | "rating" | "followers")
+            }
             className="border px-2 py-2 rounded-lg"
           >
             <option value="rating">Sắp xếp: Đánh giá</option>
@@ -327,10 +330,13 @@ export default function QuanAnPage() {
                 HOT
               </span>
             )}
-            <img
+            <Image
               src={r.image}
               alt={r.name}
+              width={320}
+              height={128}
               className="w-full h-32 object-cover rounded"
+              priority={r.isHot}
             />
             <div className="flex justify-between items-center mt-2">
               <span className="font-semibold">{r.name}</span>
@@ -475,9 +481,11 @@ export default function QuanAnPage() {
               const r = restaurants.find((x) => x.id === openModal)!;
               return (
                 <>
-                  <img
+                  <Image
                     src={r.image}
                     alt={r.name}
+                    width={600}
+                    height={192}
                     className="w-full h-48 object-cover rounded-xl mb-4"
                   />
                   <h3 className="text-2xl font-bold mb-2 flex items-center gap-2">

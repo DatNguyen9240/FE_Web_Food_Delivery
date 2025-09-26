@@ -2,7 +2,6 @@
 
 import LoginLayout from "../login/LoginLayout";
 import Link from "next/link";
-import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { registerRequest } from "@/redux/slice/Auth/AuthSlice";
 import { toast } from "react-toastify";

@@ -2,7 +2,6 @@
 
 import LoginLayout from "./LoginLayout";
 import Link from "next/link";
-import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
