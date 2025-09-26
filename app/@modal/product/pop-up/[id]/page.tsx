@@ -2,15 +2,15 @@
 
 import { useState, use } from "react";
 import { useRouter } from "next/navigation";
-import SectionTitle from "@/app/components/SectionTitle";
-import ProductImages from "@/app/components/ProductImages";
+import SectionTitle from "@/components/SectionTitle";
+import ProductImages from "@/components/ProductImages";
 import {
   ButtonMinus,
   ButtonPlus,
   AddToCartButton,
   WishlistButton,
   ButtonClose,
-} from "@/app/components/Button";
+} from "@/components/Button";
 
 export default function FoodModal({
   params,

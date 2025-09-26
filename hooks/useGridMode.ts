@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useBreakpoint } from "@/app/hooks/useBreakpoint";
+import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 export function useGridMode() {
   const breakpoint = useBreakpoint();

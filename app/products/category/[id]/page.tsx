@@ -1,7 +1,7 @@
 "use client";
 
-import ProductGrid from "@/app/components/ProductGrid";
-import ViewModeSwitcher from "@/app/components/ViewModeSwitcher";
+import ProductGrid from "@/components/ProductGrid";
+import ViewModeSwitcher from "@/components/ViewModeSwitcher";
 import { useGridMode } from "@/app/hooks/useGridMode";
 
 const newProducts = [

@@ -3,8 +3,67 @@
 import LoginLayout from "../login/LoginLayout";
 import Link from "next/link";
 import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux";
+import { registerRequest } from "@/redux/slice/Auth/AuthSlice";
+import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { RootState } from "@/redux/store/store";
 
 export default function SignupPage() {
+  const router = useRouter();
+  const dispatch = useDispatch();
+  const { loading, error, registerSuccess } = useSelector(
+    (state: RootState) => state.auth
+  );
+
+  const [form, setForm] = useState({
+    userName: "",
+    displayName: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+    dateOfBirth: "",
+    gender: 0,
+  });
+
+  // Lắng nghe error và toast
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
+
+  // Lắng nghe đăng ký thành công
+  useEffect(() => {
+    if (registerSuccess) {
+      toast.success("Đăng ký thành công!");
+      setTimeout(() => {
+        router.push("/login");
+      }, 1000);
+    }
+  }, [registerSuccess, router]);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    dispatch(
+      registerRequest({
+        userName: form.userName,
+        displayName: form.displayName,
+        email: form.email,
+        phone: form.phone,
+        password: form.password,
+        dateOfBirth: form.dateOfBirth,
+        gender: Number(form.gender),
+      })
+    );
+  };
+
   return (
     <LoginLayout>
       <div className="w-full max-w-md">
@@ -29,11 +88,25 @@ export default function SignupPage() {
           để trở thành thành viên của Dorfo.
         </p>
 
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
+          <div>
+            <label className="block text-gray-600 mb-2">Tên đăng nhập</label>
+            <input
+              type="text"
+              name="userName"
+              value={form.userName}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-lg text-gray-400"
+              placeholder="Nhập tên đăng nhập"
+            />
+          </div>
           <div>
             <label className="block text-gray-600 mb-2">Họ và tên</label>
             <input
               type="text"
+              name="displayName"
+              value={form.displayName}
+              onChange={handleChange}
               className="w-full p-3 border rounded-lg text-gray-400"
               placeholder="Nhập họ và tên"
             />
@@ -42,14 +115,31 @@ export default function SignupPage() {
             <label className="block text-gray-600 mb-2">Email</label>
             <input
               type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
               className="w-full p-3 border rounded-lg text-gray-400"
               placeholder="Nhập email của bạn"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-600 mb-2">Số điện thoại</label>
+            <input
+              type="text"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-lg text-gray-400"
+              placeholder="Nhập số điện thoại của bạn"
             />
           </div>
           <div>
             <label className="block text-gray-600 mb-2">Mật khẩu</label>
             <input
               type="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
               className="w-full p-3 border rounded-lg text-gray-400"
               placeholder="Tạo mật khẩu"
             />
@@ -60,9 +150,35 @@ export default function SignupPage() {
             </label>
             <input
               type="password"
+              name="confirmPassword"
+              value={form.confirmPassword}
+              onChange={handleChange}
               className="w-full p-3 border rounded-lg text-gray-400"
               placeholder="Nhập lại mật khẩu"
             />
+          </div>
+          <div>
+            <label className="block text-gray-600 mb-2">Ngày sinh</label>
+            <input
+              type="date"
+              name="dateOfBirth"
+              value={form.dateOfBirth}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-lg text-gray-400"
+            />
+          </div>
+          <div>
+            <label className="block text-gray-600 mb-2">Giới tính</label>
+            <select
+              name="gender"
+              value={form.gender}
+              onChange={handleChange}
+              className="w-full p-3 border rounded-lg text-gray-400"
+            >
+              <option value={0}>Nam</option>
+              <option value={1}>Nữ</option>
+              <option value={2}>Khác</option>
+            </select>
           </div>
           <button
             type="submit"
@@ -71,29 +187,6 @@ export default function SignupPage() {
             Đăng ký
           </button>
         </form>
-
-        {/* Đăng ký mạng xã hội */}
-        <div className="mt-6 text-center">
-          <p className="text-gray-600 mb-4">hoặc đăng ký bằng tài khoản khác</p>
-          <div className="flex justify-center space-x-4">
-            <button className="p-2 border rounded-full">
-              <Image
-                src="/icons/google-icon.png"
-                alt="Google"
-                width={24}
-                height={24}
-              />
-            </button>
-            <button className="p-2 border rounded-full">
-              <Image
-                src="/icons/facebook-icon.png"
-                alt="Facebook"
-                width={24}
-                height={24}
-              />
-            </button>
-          </div>
-        </div>
 
         {/* Link đăng nhập */}
         <p className="text-center mt-6 text-black">

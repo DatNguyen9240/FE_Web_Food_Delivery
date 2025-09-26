@@ -1,6 +1,6 @@
 import React from "react";
-import CartTable from "../components/CartTable";
-import CartTotals from "../components/CartTotals";
+import CartTable from "../../components/CartTable";
+import CartTotals from "../../components/CartTotals";
 
 const CartPage: React.FC = () => {
   return (

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { ButtonPrev, ButtonNext } from "./Button";
 import CarouselIndicator from "./CarouselIndicator";
-import { useBreakpoint } from "@/app/hooks/useBreakpoint";
+import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 const images = ["/sell_off/01.jpg", "/sell_off/02.jpg", "/sell_off/03.jpg"];
 

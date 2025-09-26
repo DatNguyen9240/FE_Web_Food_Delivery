@@ -1,7 +1,7 @@
 import React, { useState, useRef, useLayoutEffect } from "react";
 import ProductCard from "./ProductCard";
 import { ButtonPrev, ButtonNext } from "./Button";
-import { useBreakpoint } from "@/app/hooks/useBreakpoint";
+import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 type Product = {
   id: string;

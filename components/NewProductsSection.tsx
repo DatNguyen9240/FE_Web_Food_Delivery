@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import ProductsTitle from "./ProductsTitle";
 import ProductGrid from "./ProductGrid";
 import Pagination from "./Pagination";
-import { useBreakpoint } from "@/app/hooks/useBreakpoint";
+import { useBreakpoint } from "@/hooks/useBreakpoint";
 
 // Dữ liệu mẫu sản phẩm mới
 const newProducts = [

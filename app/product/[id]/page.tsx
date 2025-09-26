@@ -1,8 +1,8 @@
 "use client";
 import ProductModal from "@/app/@modal/product/pop-up/[id]/page";
-import ProductCarousel from "@/app/components/ProductCarousel";
-import ProductInforTab from "@/app/components/ProductInforTab";
-import ProductsTitle from "@/app/components/ProductsTitle";
+import ProductCarousel from "@/components/ProductCarousel";
+import ProductInforTab from "@/components/ProductInforTab";
+import ProductsTitle from "@/components/ProductsTitle";
 const featuredProducts = [
   {
     id: "f1",

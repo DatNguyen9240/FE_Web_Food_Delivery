@@ -1,7 +1,7 @@
-import Carousel from "./components/Carousel";
-import FeaturedCategories from "./components/FeaturedCategories";
-import PopularProductsSection from "./components/PopularProductsSection";
-import FeaturedProductsSection from "./components/FeaturedProductsSection";
+import Carousel from "../components/Carousel";
+import FeaturedCategories from "../components/FeaturedCategories";
+import PopularProductsSection from "../components/PopularProductsSection";
+import FeaturedProductsSection from "../components/FeaturedProductsSection";
 export default function HomePage() {
   return (
     <main>

@@ -3,8 +3,51 @@
 import LoginLayout from "./LoginLayout";
 import Link from "next/link";
 import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import { loginRequest } from "@/redux/slice/Auth/AuthSlice";
+import { RootState } from "@/redux/store/store";
 
 export default function LoginPage() {
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const { loading, error, isAuthenticated } = useSelector(
+    (state: RootState) => state.auth
+  );
+  const [form, setForm] = useState({
+    login: "", // Có thể là userName hoặc phone
+    password: "",
+  });
+
+  useEffect(() => {
+    if (error) toast.error(error);
+  }, [error]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      toast.success("Đăng nhập thành công!");
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
+    }
+  }, [isAuthenticated, router]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // Luôn truyền userName, nếu nhập số thì gán vào userName
+    dispatch(
+      loginRequest({
+        userName: form.login.trim(),
+        password: form.password,
+      })
+    );
+  };
   return (
     <LoginLayout>
       <div className="w-full max-w-md">
@@ -29,13 +72,19 @@ export default function LoginPage() {
           để kết nối cùng Dorfo.
         </p>
 
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleSubmit}>
           <div>
-            <label className="block text-gray-600 mb-2">Email</label>
+            <label className="block text-gray-600 mb-2">
+              Tên đăng nhập hoặc Số điện thoại
+            </label>
             <input
-              type="email"
+              type="text"
+              name="login"
+              value={form.login}
+              onChange={handleChange}
               className="w-full p-3 border rounded-lg text-gray-400"
-              placeholder="Nhập email của bạn"
+              placeholder="Nhập tên đăng nhập hoặc số điện thoại"
+              required
             />
           </div>
 
@@ -43,8 +92,12 @@ export default function LoginPage() {
             <label className="block text-gray-600 mb-2">Mật khẩu</label>
             <input
               type="password"
+              name="password"
+              value={form.password}
+              onChange={handleChange}
               className="w-full p-3 border rounded-lg text-gray-400"
               placeholder="Nhập mật khẩu"
+              required
             />
           </div>
 
@@ -61,35 +114,11 @@ export default function LoginPage() {
           <button
             type="submit"
             className="w-full bg-orange-500 text-white py-3 rounded-lg hover:bg-orange-600"
+            disabled={loading}
           >
-            Đăng nhập
+            {loading ? "Đang đăng nhập..." : "Đăng nhập"}
           </button>
         </form>
-
-        {/* Đăng nhập mạng xã hội */}
-        <div className="mt-6 text-center">
-          <p className="text-gray-600 mb-4">
-            hoặc đăng nhập bằng tài khoản khác
-          </p>
-          <div className="flex justify-center space-x-4">
-            <button className="p-2 border rounded-full">
-              <Image
-                src="/icons/google-icon.png"
-                alt="Google"
-                width={24}
-                height={24}
-              />
-            </button>
-            <button className="p-2 border rounded-full">
-              <Image
-                src="/icons/facebook-icon.png"
-                alt="Facebook"
-                width={24}
-                height={24}
-              />
-            </button>
-          </div>
-        </div>
 
         {/* Link đăng ký */}
         <p className="text-center mt-6 text-black">

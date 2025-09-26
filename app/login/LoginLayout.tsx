@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { useState } from "react";
-import FoodCircle from "../components/FoodCircle";
+import FoodCircle from "../../components/FoodCircle";
 
 const foodItems = [
   { id: 1, image: "/foods/salad.jpg" },
@@ -12,7 +12,11 @@ const foodItems = [
   { id: 6, image: "/foods/buddha-bowl.jpg" },
 ];
 
-export default function LoginLayout({ children }: { children: React.ReactNode }) {
+export default function LoginLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   return (

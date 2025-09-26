@@ -5,6 +5,9 @@ import SearchBar from "./SearchBar";
 import CartIcon from "./CartIcon";
 import Badge from "./Badge";
 import { SignUpButton, LoginButton } from "./Button";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store/store";
+import AccountDropdown from "./AccountDropdown";
 import { useRouter } from "next/navigation";
 
 const Header = () => {
@@ -12,6 +15,9 @@ const Header = () => {
   const notificationCount = 2;
   const cartCount = 0;
   const router = useRouter();
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
 
   return (
     <header className="bg-white border-b border-gray-200 py-3">
@@ -60,13 +66,20 @@ const Header = () => {
             <Badge count={cartCount} />
           </div>
 
-          <div className="hidden lg:flex">
-            <LoginButton onClick={() => router.push("/login")} />
-          </div>
-
-          <div className="hidden lg:flex">
-            <SignUpButton onClick={() => router.push("/signup")} />
-          </div>
+          {!isAuthenticated ? (
+            <>
+              <div className="hidden lg:flex">
+                <LoginButton onClick={() => router.push("/login")} />
+              </div>
+              <div className="hidden lg:flex">
+                <SignUpButton onClick={() => router.push("/signup")} />
+              </div>
+            </>
+          ) : (
+            <div className="hidden lg:flex">
+              <AccountDropdown />
+            </div>
+          )}
         </div>
       </div>
       <div className="md:hidden max-w-screen-xl mx-auto px-14 mt-3">
@@ -97,13 +110,19 @@ const Header = () => {
               </svg>
             </button>
             <div className="flex items-center justify-center gap-1">
-              <LoginButton
-                onClick={() => {
-                  setOpenModal(false);
-                  router.push("/login");
-                }}
-              />
-              <SignUpButton onClick={() => router.push("/signup")} />
+              {!isAuthenticated ? (
+                <>
+                  <LoginButton
+                    onClick={() => {
+                      setOpenModal(false);
+                      router.push("/login");
+                    }}
+                  />
+                  <SignUpButton onClick={() => router.push("/signup")} />
+                </>
+              ) : (
+                <AccountDropdown />
+              )}
             </div>
           </div>
           <style>{`
