@@ -4,14 +4,12 @@ import LoginLayout from "./LoginLayout";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { loginRequest } from "@/redux/slice/Auth/AuthSlice";
 import { RootState } from "@/redux/store/store";
 
 export default function LoginPage() {
   const dispatch = useDispatch();
-  const router = useRouter();
   const { loading, error, isAuthenticated } = useSelector(
     (state: RootState) => state.auth
   );
@@ -28,10 +26,10 @@ export default function LoginPage() {
     if (isAuthenticated) {
       toast.success("Đăng nhập thành công!");
       setTimeout(() => {
-        router.push("/");
+        window.location.href = "/";
       }, 1000);
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });

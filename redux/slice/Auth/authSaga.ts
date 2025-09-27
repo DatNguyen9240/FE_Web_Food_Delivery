@@ -11,13 +11,28 @@ import {
   logoutRequest,
   logoutSuccess,
   logoutFailure,
-  refreshTokenRequest,
-  refreshTokenSuccess,
-  refreshTokenFailure,
   getCurrentUserRequest,
   getCurrentUserSuccess,
   getCurrentUserFailure,
+  updateUserRequest,
+  updateUserSuccess,
+  updateUserFailure,
 } from "./AuthSlice";
+function* updateUserSaga(action: PayloadAction<any>): Generator {
+  try {
+    // Gửi PUT /User với dữ liệu user mới
+    const response = yield call(api.put, "/User", action.payload);
+    yield put(updateUserSuccess(response.data));
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      yield put(
+        updateUserFailure(error.message || "Failed to update user info")
+      );
+    } else {
+      yield put(updateUserFailure("Failed to update user info"));
+    }
+  }
+}
 import {
   LoginRequest,
   RegisterRequest,
@@ -26,12 +41,24 @@ import {
 
 function* loginSaga(action: PayloadAction<LoginRequest>): Generator {
   try {
-    const response: { data: AuthResponse } = yield call(
-      api.post,
-      "/Auth/login",
-      action.payload
-    );
-    yield put(loginSuccess(response.data));
+    // Gọi API login lấy accessToken, refreshToken
+    const response: { data: { accessToken: string; refreshToken: string } } =
+      yield call(api.post, "/Auth/login", action.payload);
+    const { accessToken, refreshToken } = response.data;
+
+    // Gọi tiếp API lấy user info với accessToken vừa nhận
+    // Tạm thời set header Authorization cho request tiếp theo
+    const userResponse: { data: any } = yield call(api.get, "/User", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    // Tạo object AuthResponse đúng type
+    const authResponse: AuthResponse = {
+      user: userResponse.data,
+      accessToken,
+      refreshToken,
+    };
+    yield put(loginSuccess(authResponse));
   } catch (error: unknown) {
     if (error instanceof Error) {
       yield put(loginFailure(error.message || "Login failed"));
@@ -71,37 +98,9 @@ function* logoutSaga(): Generator {
   }
 }
 
-// Helper: get cookie by name
-function getCookie(name: string): string | null {
-  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-  return match ? decodeURIComponent(match[2]) : null;
-}
-
-function* refreshTokenSaga(): Generator {
-  try {
-    const accessToken = getCookie("accessToken");
-    const refreshToken = getCookie("refreshToken");
-    const response: { data: AuthResponse } = yield call(
-      api.post,
-      "/auth/refresh",
-      {
-        accessToken,
-        refreshToken,
-      }
-    );
-    yield put(refreshTokenSuccess(response.data));
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      yield put(refreshTokenFailure(error.message || "Token refresh failed"));
-    } else {
-      yield put(refreshTokenFailure("Token refresh failed"));
-    }
-  }
-}
-
 function* getCurrentUserSaga(): Generator {
   try {
-    const response = yield call(api.get, "/auth/me");
+    const response = yield call(api.get, "/User");
     yield put(getCurrentUserSuccess(response.data));
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -118,6 +117,6 @@ export default function* authSaga(): Generator {
   yield takeLatest(loginRequest.type, loginSaga);
   yield takeLatest(registerRequest.type, registerSaga);
   yield takeLatest(logoutRequest.type, logoutSaga);
-  yield takeLatest(refreshTokenRequest.type, refreshTokenSaga);
   yield takeLatest(getCurrentUserRequest.type, getCurrentUserSaga);
+  yield takeLatest(updateUserRequest.type, updateUserSaga);
 }

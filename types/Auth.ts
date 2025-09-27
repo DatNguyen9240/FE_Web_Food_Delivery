@@ -1,10 +1,13 @@
 export interface User {
   id: string;
+  username: string;
   phone: string;
   email: string;
   displayName: string;
-  dateOfBirth: string;
-  gender: number;
+  birthDate: string;
+  gender: string;
+  role: string;
+  avatarUrl: string | null;
 }
 
 export interface LoginRequest {
@@ -25,7 +28,7 @@ export interface RegisterRequest {
 export interface AuthResponse {
   user: User;
   accessToken: string;
-  refreshToken?: string;
+  refreshToken: string;
 }
 
 export interface AuthState {

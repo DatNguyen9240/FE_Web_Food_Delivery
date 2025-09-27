@@ -1,17 +1,23 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
-import { RootState } from "@/redux/store/store";
-import { logoutRequest } from "@/redux/slice/Auth/AuthSlice";
 
-const AccountDropdown: React.FC = () => {
-  const dispatch = useDispatch();
+interface AccountDropdownProps {
+  user: {
+    displayName?: string;
+  } | null;
+}
+
+const AccountDropdown: React.FC<AccountDropdownProps> = ({ user }) => {
   const router = useRouter();
-  const user = useSelector((state: RootState) => state.auth.user);
 
   const handleLogout = () => {
-    dispatch(logoutRequest());
+    // Xóa cookie đăng nhập (client only)
+    document.cookie = "accessToken=; path=/; max-age=0";
+    document.cookie = "refreshToken=; path=/; max-age=0";
+    document.cookie = "user=; path=/; max-age=0";
     router.push("/");
+    // Có thể reload lại trang nếu muốn clear context
+    window.location.reload();
   };
 
   return (
@@ -31,11 +37,10 @@ const AccountDropdown: React.FC = () => {
           <path d="M6 9l6 6 6-6" />
         </svg>
       </button>
-      <div className="absolute right-0 top-full w-48 bg-white border rounded shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity z-50">
-        <div className="px-4 py-2 text-gray-700 border-b">{user?.email}</div>
+      <div className="absolute right-0 top-full w-56 bg-white border rounded shadow-lg opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity z-50">
         <button
           className="w-full text-left px-4 py-2 hover:bg-gray-100 text-gray-700"
-          onClick={() => router.push("/account")}
+          onClick={() => router.push("/profile")}
         >
           Thông tin tài khoản
         </button>

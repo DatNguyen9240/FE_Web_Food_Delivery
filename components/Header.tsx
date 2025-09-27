@@ -9,15 +9,18 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import AccountDropdown from "./AccountDropdown";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/app/auth-context";
 
-const Header = () => {
+interface HeaderProps {
+  isAuthenticated: boolean;
+  user: any;
+}
+
+const Header: React.FC<HeaderProps> = ({ isAuthenticated, user }) => {
   const [openModal, setOpenModal] = useState(false);
   const notificationCount = 2;
   const cartCount = 0;
   const router = useRouter();
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.auth.isAuthenticated
-  );
 
   return (
     <header className="bg-white border-b border-gray-200 py-3">
@@ -77,7 +80,7 @@ const Header = () => {
             </>
           ) : (
             <div className="hidden lg:flex">
-              <AccountDropdown />
+              <AccountDropdown user={user} />
             </div>
           )}
         </div>
@@ -121,7 +124,7 @@ const Header = () => {
                   <SignUpButton onClick={() => router.push("/signup")} />
                 </>
               ) : (
-                <AccountDropdown />
+                <AccountDropdown user={user} />
               )}
             </div>
           </div>

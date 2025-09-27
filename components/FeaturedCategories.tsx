@@ -2,12 +2,12 @@ import React from "react";
 import SectionTitle from "./SectionTitle";
 
 const categories = [
-  { label: "Món chính", icon: "🍛", href: "/mon-chinh" },
-  { label: "Đồ ăn vặt", icon: "🍟", href: "/do-an-vat" },
-  { label: "Đồ uống", icon: "🥤", href: "/do-uong" },
-  { label: "Tráng miệng", icon: "🍰", href: "/trang-mieng" },
-  { label: "Hoa quả", icon: "🍉", href: "/hoa-qua" },
-  { label: "Đồ chay", icon: "🥗", href: "/do-chay" },
+  { label: "Món chính", icon: "🍛", href: "/products/category/mon-chinh" },
+  { label: "Đồ ăn vặt", icon: "🍟", href: "/products/category/do-an-vat" },
+  { label: "Đồ uống", icon: "🥤", href: "/products/category/do-uong" },
+  { label: "Tráng miệng", icon: "🍰", href: "/products/category/trang-mieng" },
+  { label: "Hoa quả", icon: "🍉", href: "/products/category/hoa-qua" },
+  { label: "Đồ chay", icon: "🥗", href: "/products/category/do-chay" },
 ];
 
 const FeaturedCategories: React.FC = () => (

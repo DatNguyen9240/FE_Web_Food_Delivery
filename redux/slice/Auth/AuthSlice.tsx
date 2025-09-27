@@ -31,14 +31,6 @@ export const logoutRequest = createAction("auth/logoutRequest");
 export const logoutSuccess = createAction("auth/logoutSuccess");
 export const logoutFailure = createAction<string>("auth/logoutFailure");
 
-export const refreshTokenRequest = createAction("auth/refreshTokenRequest");
-export const refreshTokenSuccess = createAction<AuthResponse>(
-  "auth/refreshTokenSuccess"
-);
-export const refreshTokenFailure = createAction<string>(
-  "auth/refreshTokenFailure"
-);
-
 export const getCurrentUserRequest = createAction("auth/getCurrentUserRequest");
 export const getCurrentUserSuccess = createAction<User>(
   "auth/getCurrentUserSuccess"
@@ -46,6 +38,11 @@ export const getCurrentUserSuccess = createAction<User>(
 export const getCurrentUserFailure = createAction<string>(
   "auth/getCurrentUserFailure"
 );
+
+// Update user (PUT /User)
+export const updateUserRequest = createAction<User>("auth/updateUserRequest");
+export const updateUserSuccess = createAction<User>("auth/updateUserSuccess");
+export const updateUserFailure = createAction<string>("auth/updateUserFailure");
 
 const authSlice = createSlice({
   name: "auth",
@@ -161,35 +158,7 @@ const authSlice = createSlice({
         state.error = action.payload || "Logout failed";
       })
       // Refresh token
-      .addCase(refreshTokenRequest, (state) => {
-        state.loading = true;
-      })
-      .addCase(refreshTokenSuccess, (state, action) => {
-        state.loading = false;
-        state.user = action.payload.user;
-        state.accessToken = action.payload.accessToken;
-        state.isAuthenticated = true;
-        state.error = null;
-        if (typeof window !== "undefined") {
-          document.cookie = `accessToken=${action.payload.accessToken}; path=/; max-age=2592000`;
-          document.cookie = `user=${encodeURIComponent(
-            JSON.stringify(action.payload.user)
-          )}; path=/; max-age=2592000`;
-          if (action.payload.refreshToken) {
-            document.cookie = `refreshToken=${action.payload.refreshToken}; path=/; max-age=2592000`;
-          }
-        }
-      })
-      .addCase(refreshTokenFailure, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || "accessToken refresh failed";
-        state.isAuthenticated = false;
-        if (typeof window !== "undefined") {
-          document.cookie = "accessToken=; path=/; max-age=0";
-          document.cookie = "refreshToken=; path=/; max-age=0";
-          document.cookie = "user=; path=/; max-age=0";
-        }
-      })
+
       // Get current user
       .addCase(getCurrentUserRequest, (state) => {
         state.loading = true;
@@ -199,16 +168,42 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.error = null;
         if (typeof window !== "undefined") {
-          localStorage.setItem("user", JSON.stringify(action.payload));
+          document.cookie = `user=${encodeURIComponent(
+            JSON.stringify(action.payload)
+          )}; path=/; max-age=2592000`;
         }
       })
       .addCase(getCurrentUserFailure, (state, action) => {
         state.loading = false;
         state.error = action.payload || "Failed to get user info";
+      })
+      // Update user (PUT /User)
+      .addCase(updateUserRequest, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateUserSuccess, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+        state.error = null;
+        if (typeof window !== "undefined") {
+          document.cookie = `user=${encodeURIComponent(
+            JSON.stringify(action.payload)
+          )}; path=/; max-age=2592000`;
+        }
+      })
+      .addCase(updateUserFailure, (state, action) => {
+        state.loading = false;
+        state.error = action.payload || "Failed to update user info";
       });
   },
 });
 
-export const { clearError, setCredentials, clearCredentials, setLoading, clearRegisterSuccess } =
-  authSlice.actions;
+export const {
+  clearError,
+  setCredentials,
+  clearCredentials,
+  setLoading,
+  clearRegisterSuccess,
+} = authSlice.actions;
 export default authSlice.reducer;

@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
-import AnnouncementBar from "../components/AnnouncementBar";
-import Header from "../components/Header";
 import Nav from "../components/Nav";
 import Footer from "../components/Footer";
 import ReduxProvider from "@/redux/store/ReduxProvider";
 import AppToastContainer from "../components/AppToastContainer";
+import AuthProvider from "./auth-provider";
 
 const roboto = Roboto({
   subsets: ["latin"],
@@ -31,14 +30,14 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${roboto.variable} antialiased`}>
         <AppToastContainer />
-        <ReduxProvider>
-          <AnnouncementBar />
-          <Header />
-          <Nav />
-          {children}
-          <Footer />
-          {modal}
-        </ReduxProvider>
+        <AuthProvider>
+          <ReduxProvider>
+            <Nav />
+            {children}
+            <Footer />
+            {modal}
+          </ReduxProvider>
+        </AuthProvider>
       </body>
     </html>
   );
