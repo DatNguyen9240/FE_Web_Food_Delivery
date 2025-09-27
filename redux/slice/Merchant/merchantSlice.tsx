@@ -10,8 +10,8 @@ export interface Merchant {
   createdAt: string;
   isActive: boolean;
   commissionRate: number;
-  address: any;
-  setting: any;
+  address: unknown;
+  setting: unknown;
 }
 
 export interface MerchantState {

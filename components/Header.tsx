@@ -5,15 +5,13 @@ import SearchBar from "./SearchBar";
 import CartIcon from "./CartIcon";
 import Badge from "./Badge";
 import { SignUpButton, LoginButton } from "./Button";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store/store";
 import AccountDropdown from "./AccountDropdown";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/app/auth-context";
+import { User } from "@/types/Auth";
 
 interface HeaderProps {
   isAuthenticated: boolean;
-  user: any;
+  user: User;
 }
 
 const Header: React.FC<HeaderProps> = ({ isAuthenticated, user }) => {

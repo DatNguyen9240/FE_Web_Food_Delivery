@@ -18,7 +18,7 @@ import {
   updateUserSuccess,
   updateUserFailure,
 } from "./AuthSlice";
-function* updateUserSaga(action: PayloadAction<any>): Generator {
+function* updateUserSaga(action: PayloadAction<unknown>): Generator {
   try {
     // Gửi PUT /User với dữ liệu user mới
     const response = yield call(api.put, "/User", action.payload);
@@ -46,15 +46,8 @@ function* loginSaga(action: PayloadAction<LoginRequest>): Generator {
       yield call(api.post, "/Auth/login", action.payload);
     const { accessToken, refreshToken } = response.data;
 
-    // Gọi tiếp API lấy user info với accessToken vừa nhận
-    // Tạm thời set header Authorization cho request tiếp theo
-    const userResponse: { data: any } = yield call(api.get, "/User", {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-
     // Tạo object AuthResponse đúng type
     const authResponse: AuthResponse = {
-      user: userResponse.data,
       accessToken,
       refreshToken,
     };

@@ -100,7 +100,6 @@ const authSlice = createSlice({
       })
       .addCase(loginSuccess, (state, action) => {
         state.loading = false;
-        state.user = action.payload.user;
         const accessToken = action.payload.accessToken;
         state.accessToken = accessToken;
         state.isAuthenticated = true;
@@ -108,9 +107,6 @@ const authSlice = createSlice({
         if (typeof window !== "undefined") {
           // Lưu vào cookie
           document.cookie = `accessToken=${accessToken}; path=/; max-age=2592000`;
-          document.cookie = `user=${encodeURIComponent(
-            JSON.stringify(action.payload.user)
-          )}; path=/; max-age=2592000`;
           if (action.payload.refreshToken) {
             document.cookie = `refreshToken=${action.payload.refreshToken}; path=/; max-age=2592000`;
           }

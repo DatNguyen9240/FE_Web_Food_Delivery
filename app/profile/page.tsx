@@ -26,7 +26,7 @@ export default function ProfilePage() {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(getCurrentUserRequest());
-  }, []);
+  }, [dispatch]);
   const user = useSelector((state: RootState) => state.auth.user);
   const [editMode, setEditMode] = useState(false);
   const [form, setForm] = useState({

@@ -1,8 +1,9 @@
 import { createContext, useContext } from "react";
+import type { User } from "../types/Auth";
 
 export const AuthContext = createContext<{
   isAuthenticated: boolean;
-  user: any;
+  user: User | null;
 }>({
   isAuthenticated: false,
   user: null,

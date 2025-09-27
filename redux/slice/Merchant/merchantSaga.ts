@@ -12,9 +12,11 @@ function* fetchMerchantsSaga(): Generator {
     // Gọi API mock Next.js
     const response = yield call(api.get, "/Merchant");
     yield put(fetchMerchantsSuccess(response.data));
-  } catch (error: any) {
+  } catch (error: unknown) {
     yield put(
-      fetchMerchantsFailure(error.message || "Lỗi lấy danh sách merchant")
+      fetchMerchantsFailure(
+        (error as Error).message || "Lỗi lấy danh sách merchant"
+      )
     );
   }
 }
