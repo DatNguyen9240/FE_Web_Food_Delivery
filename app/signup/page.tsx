@@ -3,7 +3,10 @@
 import LoginLayout from "../login/LoginLayout";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
-import { registerRequest } from "@/redux/slice/Auth/AuthSlice";
+import {
+  registerRequest,
+  clearRegisterSuccess,
+} from "@/redux/slice/Auth/AuthSlice";
 import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -16,17 +19,6 @@ export default function SignupPage() {
     (state: RootState) => state.auth
   );
 
-  const [form, setForm] = useState({
-    userName: "",
-    displayName: "",
-    email: "",
-    phone: "",
-    password: "",
-    confirmPassword: "",
-    dateOfBirth: "",
-    gender: 0,
-  });
-
   // Lắng nghe error và toast
   useEffect(() => {
     if (error) toast.error(error);
@@ -38,9 +30,21 @@ export default function SignupPage() {
       toast.success("Đăng ký thành công!");
       setTimeout(() => {
         router.push("/login");
+        dispatch(clearRegisterSuccess());
       }, 1000);
     }
-  }, [registerSuccess, router]);
+  }, [registerSuccess, router, dispatch]);
+
+  const [form, setForm] = useState({
+    userName: "",
+    displayName: "",
+    email: "",
+    phone: "",
+    password: "",
+    confirmPassword: "",
+    dateOfBirth: "",
+    gender: 0,
+  });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
