@@ -54,13 +54,11 @@ const ProductImageActions = ({ productId }: { productId?: string }) => {
 const ProductImage = ({
   src,
   alt,
-  hoverSrc,
   productId,
   className = "",
 }: {
   src: string;
   alt?: string;
-  hoverSrc?: string;
   productId?: string;
   className?: string;
 }) => {
@@ -76,29 +74,13 @@ const ProductImage = ({
         fill
         className="
           object-cover rounded-t-lg
-          transition-opacity duration-500
-          group-hover:opacity-0
+          transform transition-transform duration-500
+          group-hover:scale-110
           absolute top-0 left-0 z-10
         "
         sizes="100vw"
         priority
       />
-      {/* Ảnh hover */}
-      {hoverSrc && (
-        <Image
-          src={hoverSrc}
-          alt={alt ?? "Product image"}
-          fill
-          className="
-            object-cover rounded-t-lg
-            transition-transform transition-opacity duration-500
-            opacity-0 scale-100
-            group-hover:opacity-100 group-hover:scale-110
-            absolute top-0 left-0 z-20
-          "
-          sizes="100vw"
-        />
-      )}
 
       <ProductImageActions productId={productId} />
     </div>
@@ -214,7 +196,7 @@ const ProductCard: React.FC<{
       <ProductImage
         src={product.imgUrl || "/products/04.jpg"}
         alt={product.name}
-        hoverSrc={product.imageHover}
+        
         productId={product.menuItemId}
         className={imageClassName}
       />
