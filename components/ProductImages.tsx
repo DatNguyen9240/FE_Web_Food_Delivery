@@ -1,5 +1,4 @@
 import Image from "next/image";
-import { ProductBadge } from "@/components/ProductCard";
 
 export default function ProductImages({ imageUrl }: { imageUrl: string }) {
   return (

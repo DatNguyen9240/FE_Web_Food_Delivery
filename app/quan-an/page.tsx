@@ -215,9 +215,7 @@ const food = [
 ];
 
 export default function QuanAnPage() {
-  const [selectedRestaurant, setSelectedRestaurant] = useState<number | null>(
-    null
-  );
+
   const [search, setSearch] = useState("");
 
   // Thêm state cho filter theo rating và sort

@@ -9,10 +9,8 @@ import {
 function* fetchMerchantCategoriesSaga(): Generator {
   try {
     const response = yield call(api.get, "/MerchantCategory");
-    // @ts-ignore
     yield put(fetchMerchantCategoriesSuccess(response.data));
   } catch (error: unknown) {
-    // @ts-ignore
     yield put(
       fetchMerchantCategoriesFailure(
         (error as Error).message || "Lỗi lấy danh sách MerchantCategory"

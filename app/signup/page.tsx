@@ -15,7 +15,7 @@ import { RootState } from "@/redux/store/store";
 export default function SignupPage() {
   const router = useRouter();
   const dispatch = useDispatch();
-  const { loading, error, registerSuccess } = useSelector(
+  const {  error, registerSuccess } = useSelector(
     (state: RootState) => state.auth
   );
 

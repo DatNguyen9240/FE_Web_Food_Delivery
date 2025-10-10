@@ -97,9 +97,9 @@ export default function FoodModal({
     };
 
     console.log("Dispatch addToCartRequest", payload);
-    // dispatch to saga
-    // @ts-ignore
-    dispatch(addToCartRequest(payload));
+  // dispatch to saga
+  // @ts-expect-error - payload may be partial during build-time checks
+  dispatch(addToCartRequest(payload));
   };
 
   return (

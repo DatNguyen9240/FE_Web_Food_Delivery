@@ -8,28 +8,25 @@ import {
   fetchMenuItemByIdSuccess,
   fetchMenuItemByIdFailure,
 } from "./menuItemSlice";
+import type { MenuItem } from "./menuItemSlice";
 
 function* fetchMenuItemsSaga(): Generator {
   try {
-    const response = yield call(api.get, "/MenuItem");
-    // @ts-ignore
-    yield put(fetchMenuItemsSuccess(response.data));
+  const response = (yield call(api.get, "/MenuItem")) as { data: MenuItem[] };
+  yield put(fetchMenuItemsSuccess(response.data));
   } catch (error: unknown) {
-    // @ts-ignore
     yield put(
       fetchMenuItemsFailure((error as Error).message || "Lỗi lấy danh sách MenuItem")
     );
   }
 }
 
-function* fetchMenuItemByIdSaga(action: any): Generator {
+function* fetchMenuItemByIdSaga(action: { payload: string }): Generator {
   try {
     const id: string = action.payload;
-    const response = yield call(api.get, `/MenuItem/${id}`);
-    // @ts-ignore
+    const response = (yield call(api.get, `/MenuItem/${id}`)) as { data: MenuItem };
     yield put(fetchMenuItemByIdSuccess(response.data));
   } catch (error: unknown) {
-    // @ts-ignore
     yield put(
       fetchMenuItemByIdFailure((error as Error).message || "Lỗi lấy MenuItem theo id")
     );
@@ -37,6 +34,6 @@ function* fetchMenuItemByIdSaga(action: any): Generator {
 }
 
 export default function* menuItemSaga() {
-  yield takeLatest(fetchMenuItemsRequest.type, fetchMenuItemsSaga);
-  yield takeLatest(fetchMenuItemByIdRequest.type, fetchMenuItemByIdSaga);
+  yield takeLatest(fetchMenuItemsRequest, fetchMenuItemsSaga);
+  yield takeLatest(fetchMenuItemByIdRequest, fetchMenuItemByIdSaga);
 }

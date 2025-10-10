@@ -5,7 +5,7 @@ import { ButtonMinus, ButtonPlus, ButtonClose } from "./Button";
 import Image from "next/image";
 import MoneyVND from "./MoneyVND";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/redux/store/store";
+import { RootState, AppDispatch } from "@/redux/store/store";
 import { fetchCartRequest, updateCartItemQuantityRequest, deleteCartItemRequest } from "@/redux/slice/Cart/cartSlice";
 
 type CartItemType = {
@@ -17,6 +17,25 @@ type CartItemType = {
   subtotal: number;
   cartItemId?: string;
   merchantId?: string;
+};
+
+// API types to avoid `any`
+type CartApiItem = {
+  cartItemId?: string;
+  menuItemId?: string;
+  menuItemName?: string;
+  priceAtAdd?: number;
+  price?: number;
+  quantity?: number;
+};
+
+type CartApi = {
+  cartId?: string;
+  merchant?: { merchantId?: string; merchantName?: string };
+  merchantId?: string;
+  merchantName?: string;
+  items?: CartApiItem[];
+  subTotal?: number;
 };
 
 type TableHeaderProps = {
@@ -47,27 +66,24 @@ const TableHeader: React.FC<TableHeaderProps> = ({ columns }) => (
 );
 
 const CartTableRow: React.FC<{ item: CartItemType }> = ({ item }) => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
 
   const decrease = () => {
     console.debug("CartTable: decrease clicked", { cartItemId: item.cartItemId, merchantId: item.merchantId, quantity: item.quantity });
     if (!item.cartItemId) return;
     const newQty = Math.max(1, item.quantity - 1);
-    // @ts-ignore
     dispatch(updateCartItemQuantityRequest({ cartItemId: item.cartItemId, merchantId: item.merchantId, quantity: newQty }));
   };
 
   const increase = () => {
     console.debug("CartTable: increase clicked", { cartItemId: item.cartItemId, merchantId: item.merchantId, quantity: item.quantity });
     if (!item.cartItemId) return;
-    // @ts-ignore
     dispatch(updateCartItemQuantityRequest({ cartItemId: item.cartItemId, merchantId: item.merchantId, quantity: item.quantity + 1 }));
   };
 
   const remove = () => {
     console.debug("CartTable: remove clicked", { cartItemId: item.cartItemId, merchantId: item.merchantId });
     if (!item.cartItemId) return;
-    // @ts-ignore
     dispatch(deleteCartItemRequest({ cartItemId: item.cartItemId, merchantId: item.merchantId }));
   };
 
@@ -127,12 +143,11 @@ const CartTableBody: React.FC<{ items: CartItemType[] }> = ({ items }) => (
 );
 
 const CartTable: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const cartState = useSelector((s: RootState) => s.cart);
 
   useEffect(() => {
     // fetch cart on mount
-    // @ts-ignore
     dispatch(fetchCartRequest());
   }, [dispatch]);
 
@@ -148,11 +163,11 @@ const CartTable: React.FC = () => {
 
       {/* Render a table per merchant/cart */}
       <div className="flex flex-col gap-6">
-        {carts.map((c: any) => {
+        {carts.map((c: CartApi, cartIndex: number) => {
           const merchantId = c.merchant?.merchantId || c.merchantId;
           const merchantName = c.merchant?.merchantName || c.merchantName || "Quán ăn";
-          const rows: CartItemType[] = (c.items || []).map((it: any) => ({
-            id: it.cartItemId || it.menuItemId,
+          const rows: CartItemType[] = (c.items || []).map((it: CartApiItem, idx: number) => ({
+            id: String(it.cartItemId ?? it.menuItemId ?? `cart-${cartIndex}-item-${idx}`),
             cartItemId: it.cartItemId,
             merchantId,
             label: it.menuItemName || "",

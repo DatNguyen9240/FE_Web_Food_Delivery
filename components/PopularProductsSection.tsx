@@ -8,12 +8,11 @@ import Carousel from "./Carousel";
 import ProductList from "./ProductCarousel";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store/store";
-import { useEffect } from "react";
 import { fetchMenuItemsRequest } from "@/redux/slice/MenuItem/menuItemSlice"; 
 
 const PopularProductsSection: React.FC = () => {
   const dispatch = useDispatch();
-  const { items: products, loading, error } = useSelector(
+  const { items: products} = useSelector(
     (state: RootState) => state.menuItem || { items: [], loading: false, error: null }
   );
 
