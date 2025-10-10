@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import MoneyVND from "./MoneyVND";
 import { MenuItem } from "@/redux/slice/MenuItem/menuItemSlice";
 
-export const ProductBadge = ({ percent }: { percent: string }) => (
+export const ProductBadge = ({ percent, isSpecial }: { percent?: string; isSpecial?: boolean }) => (
   <span
     className="
     absolute left-2 top-2 bg-blue-100 text-blue-700
@@ -18,7 +18,7 @@ export const ProductBadge = ({ percent }: { percent: string }) => (
     z-20
   "
   >
-    {percent}
+    {typeof percent === "string" && percent ? percent : isSpecial ? "HOT" : null}
   </span>
 );
 

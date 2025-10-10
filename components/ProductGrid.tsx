@@ -1,22 +1,11 @@
 import React from "react";
 import ProductCard from "./ProductCard";
 import ProductCardHorizontal from "./ProductCardHorizontal";
+import { MenuItem } from "@/redux/slice/MenuItem/menuItemSlice";
 
-type Product = {
-  id?: string;
-  label: string;
-  priceOld: string;
-  priceNew: string;
-  percent: string;
-  distanceKm: number;
-  avgDeliveryMin: number;
-  image: string;
-  imageHover?: string;
-  rating: number;
-};
 
 interface ProductGridProps {
-  products: Product[];
+  products: MenuItem[];
   className?: string;
   cols?: number;
 }
@@ -46,17 +35,17 @@ const ProductGrid: React.FC<ProductGridProps> = ({
   if (cols === 1) {
     return (
       <div className={`flex flex-col gap-3 ${className}`}>
-        {products.map((product) => (
-          <ProductCardHorizontal key={product.id} product={product} />
+        {products.map((product, index) => (
+          <ProductCardHorizontal key={`${product.menuItemId ?? 'product'}-${index}`} product={product} />
         ))}
       </div>
     );
   }
   return (
     <div className={`grid ${colClass} gap-4 ${className}`}>
-      {products.map((product) => (
+      {products.map((product, index) => (
         <ProductCard
-          key={product.id}
+          key={`${product.menuItemId ?? 'product'}-${index}`}
           product={product}
           imageClassName={xlHeightClass}
         />

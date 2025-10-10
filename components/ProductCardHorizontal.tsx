@@ -5,24 +5,13 @@ import Image from "next/image";
 import {
   ProductBadge,
   ProductDeliveryInfo,
-  ProductRating,
   ProductPrice,
 } from "./ProductCard";
+import { MenuItem } from "@/redux/slice/MenuItem/menuItemSlice";
 
-type Product = {
-  id?: string;
-  label: string;
-  priceOld: string;
-  priceNew: string;
-  percent: string;
-  distanceKm: number;
-  avgDeliveryMin: number;
-  image: string;
-  rating: number;
-};
 
 const ProductCardHorizontal: React.FC<{
-  product: Product;
+  product: MenuItem;
   className?: string;
 }> = ({ product, className = "" }) => (
   <motion.div
@@ -34,30 +23,26 @@ const ProductCardHorizontal: React.FC<{
   >
     <div className="relative flex-shrink-0 w-[100px] h-[100px] sm:w-[140px] sm:h-[140px] md:w-[180px] md:h-[180px] max-w-full">
       <Image
-        src={product.image}
-        alt={product.label}
+        src={product.imgUrl || "/products/04.jpg"}
+        alt={product.name}
         fill
         className="object-cover rounded-lg"
         sizes="100vw"
         priority
       />
-      <ProductBadge percent={product.percent} />
+      <ProductBadge isSpecial={product.isSpecial} />
     </div>
     <div className="flex-1 flex flex-col justify-center items-start px-2 py-1 sm:px-4 sm:py-2 min-w-0">
       <div className="font-semibold text-gray-800 mb-1 text-left w-full text-[13px] sm:text-base truncate">
-        {product.label}
+        {product.name}
       </div>
       <ProductDeliveryInfo
-        distanceKm={product.distanceKm}
-        avgDeliveryMin={product.avgDeliveryMin}
+        availableFrom={product.availableFrom}
+        availableTo={product.availableTo}
       />
-      <ProductRating
-        rating={product.rating}
-        className="mb-2 text-[15px] sm:text-[18px]"
-      />
+
       <ProductPrice
-        priceOld={product.priceOld}
-        priceNew={product.priceNew}
+        price={product.price !== undefined && product.price !== null ? String(product.price) : undefined}
         className="text-[13px] sm:text-base"
       />
     </div>
