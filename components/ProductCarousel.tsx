@@ -2,22 +2,10 @@ import React, { useState, useRef, useLayoutEffect } from "react";
 import ProductCard from "./ProductCard";
 import { ButtonPrev, ButtonNext } from "./Button";
 import { useBreakpoint } from "@/hooks/useBreakpoint";
-
-type Product = {
-  id: string;
-  label: string;
-  priceOld: string;
-  priceNew: string;
-  percent: string;
-  distanceKm: number;
-  avgDeliveryMin: number;
-  image: string;
-  imageHover?: string;
-  rating: number;
-};
+import { MenuItem } from "@/redux/slice/MenuItem/menuItemSlice";
 
 type ProductCarouselProps = {
-  products: Product[];
+  products: MenuItem[];
   cardConfig?: typeof CARD_CONFIG;
   slideStep?: number;
 };
@@ -65,7 +53,7 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
         }}
       >
         {products.map((p) => (
-          <ProductCard product={p} key={p.id} />
+          <ProductCard product={p} key={p.menuItemId} />
         ))}
       </div>
       <ButtonPrev onClick={handlePrev} size={"md"} hidden={startIdx <= 0} />

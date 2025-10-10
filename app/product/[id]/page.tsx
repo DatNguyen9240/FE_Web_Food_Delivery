@@ -211,7 +211,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           description="Không thể bỏ lỡ những món ăn hấp dẫn này!"
         />
         <div className="px-4 mt-4">
-          <ProductCarousel products={featuredProducts} />
+          {/* <ProductCarousel products={featuredProducts} /> */}
         </div>
       </section>
     </>

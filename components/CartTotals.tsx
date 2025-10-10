@@ -1,24 +1,58 @@
+"use client";
 import React from "react";
 import Button from "./Button";
 import MoneyVND from "./MoneyVND";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store/store";
 
 const CartTotals: React.FC = () => {
-  const total = 1495000;
+  const cartState = useSelector((s: RootState) => s.cart);
+  const carts = cartState.carts || [];
+
+  // Compute subtotal by summing cart.subTotal if provided, otherwise items
+  let subTotal = 0;
+  let deliveryFee = 0;
+  let serviceFee = 0;
+  let discount = 0;
+
+  if (carts.length > 0) {
+    // If API returns multiple carts (per merchant), aggregate them
+    for (const c of carts) {
+      if (typeof c.subTotal === "number") subTotal += c.subTotal;
+      else if (Array.isArray(c.items)) {
+        for (const it of c.items) {
+          const price = it.priceAtAdd ?? it.price ?? 0;
+          const qty = it.quantity ?? 1;
+          subTotal += price * qty;
+        }
+      }
+      deliveryFee += c.deliveryFee ?? 0;
+      serviceFee += c.serviceFee ?? 0;
+      discount += c.discount ?? 0;
+    }
+  }
+
+  const total = subTotal + deliveryFee + serviceFee - discount;
+
   return (
     <div className="bg-white rounded-lg border p-5 w-full max-w-xs shadow flex flex-col gap-2">
       <h3 className="text-lg font-bold text-gray-800 mb-2">TỔNG GIỎ HÀNG</h3>
       <hr className="mb-2" />
       <div className="flex justify-between items-center mb-1">
         <span className="text-gray-700">Tạm tính</span>
-        <MoneyVND value={total} color="text-pink-600" className="text-lg" />
+        <MoneyVND value={subTotal} color="text-pink-600" className="text-lg" />
       </div>
       <div className="flex justify-between items-center mb-1">
         <span className="text-gray-700">Phí vận chuyển</span>
-        <span className="font-semibold text-black">Miễn phí</span>
+        <MoneyVND value={deliveryFee} color="text-black" />
       </div>
       <div className="flex justify-between items-center mb-1">
-        <span className="text-gray-700">Dự kiến giao tại</span>
-        <span className="font-semibold text-black">Việt Nam</span>
+        <span className="text-gray-700">Phí dịch vụ</span>
+        <MoneyVND value={serviceFee} color="text-black" />
+      </div>
+      <div className="flex justify-between items-center mb-1">
+        <span className="text-gray-700">Giảm giá</span>
+        <MoneyVND value={discount} color="text-black" />
       </div>
       <div className="flex justify-between items-center mt-2 mb-3">
         <span className="text-gray-700 font-bold">Tổng cộng</span>

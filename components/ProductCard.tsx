@@ -5,18 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import MoneyVND from "./MoneyVND";
-
-type Product = {
-  id?: string;
-  label: string;
-  priceOld: string;
-  priceNew: string;
-  percent: string;
-  distanceKm: number; // số km
-  avgDeliveryMin: number; // số phút giao trung bình
-  image: string;
-  rating: number;
-};
+import { MenuItem } from "@/redux/slice/MenuItem/menuItemSlice";
 
 export const ProductBadge = ({ percent }: { percent: string }) => (
   <span
@@ -30,6 +19,12 @@ export const ProductBadge = ({ percent }: { percent: string }) => (
   "
   >
     {percent}
+  </span>
+);
+
+const SpecialBadge = ({ children }: { children: React.ReactNode }) => (
+  <span className="absolute left-2 top-2 bg-red-100 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded-md z-30">
+    {children}
   </span>
 );
 
@@ -122,25 +117,41 @@ const ProductLabel = ({ label }: { label: string }) => (
   </div>
 );
 
-// Hiển thị số km và số phút giao hàng trung bình
+// Hiển thị khoảng thời gian khả dụng của món (availableFrom - availableTo)
+const formatTime = (t?: string | null, fallback = "08:00:00") => {
+  if (!t || t.trim() === "") return fallback;
+  // Accept formats like HH:mm:ss or HH:mm and return HH:mm
+  const parts = t.split(":");
+  if (parts.length >= 2) return `${parts[0].padStart(2, "0")}:${parts[1].padStart(2, "0")}`;
+  return t;
+};
+
 export const ProductDeliveryInfo = ({
-  distanceKm,
-  avgDeliveryMin,
+  availableFrom,
+  availableTo,
+  prepTimeMinutes,
   className = "",
 }: {
-  distanceKm: number;
-  avgDeliveryMin: number;
+  availableFrom?: string | null;
+  availableTo?: string | null;
+  prepTimeMinutes?: number | null;
   className?: string;
-}) => (
-  <span
-    className={
-      "text-xs text-gray-500 flex items-center gap-2 mb-1 " + className
-    }
-  >
-    <span>🚚 {distanceKm} km</span>
-    <span>⏱️ {avgDeliveryMin} phút</span>
-  </span>
-);
+}) => {
+  const from = formatTime(availableFrom, "08:00:00");
+  const to = formatTime(availableTo, "21:00:00");
+    return (
+      <div className={"mb-1 " + className}>
+        <div className="inline-flex items-center gap-2">
+          <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-700 text-[11px] py-1 px-2 rounded-lg">⏰ {from} - {to}</span>
+        </div>
+        {prepTimeMinutes && prepTimeMinutes > 0 ? (
+          <div className="mt-1">
+            <span className="inline-flex items-center gap-1 bg-gray-50 text-gray-500 text-[11px] py-1 px-2 rounded-md">⏱ {prepTimeMinutes} phút</span>
+          </div>
+        ) : null}
+      </div>
+    );
+};
 
 export const ProductRating = ({
   rating,
@@ -162,12 +173,10 @@ export const ProductRating = ({
 );
 
 export const ProductPrice = ({
-  priceOld,
-  priceNew,
+  price,
   className = "",
 }: {
-  priceOld?: string;
-  priceNew: string;
+  price?: string;
   className?: string;
 }) => {
   return (
@@ -176,14 +185,13 @@ export const ProductPrice = ({
         text-[10px] md:text-xs lg:text-sm xl:text-base pb-4
       `}
     >
-      {priceOld && <MoneyVND value={priceOld} color="text-gray-400" old />}
-      <MoneyVND value={priceNew} color="text-pink-600" />
+      {price && <MoneyVND value={price} color="text-pink-600" />}
     </div>
   );
 };
 
 const ProductCard: React.FC<{
-  product: Product & { imageHover?: string };
+  product: MenuItem & { imageHover?: string };
   className?: string;
   imageClassName?: string;
 }> = ({ product, className = "", imageClassName = "" }) => (
@@ -204,24 +212,27 @@ const ProductCard: React.FC<{
   >
     <div className="relative">
       <ProductImage
-        src={product.image}
-        alt={product.label}
+        src={product.imgUrl || "/products/04.jpg"}
+        alt={product.name}
         hoverSrc={product.imageHover}
-        productId={product.id}
+        productId={product.menuItemId}
         className={imageClassName}
       />
-      <ProductBadge percent={product.percent} />
+      {/* Badges */}
+      {product.isSpecial && <SpecialBadge>HOT</SpecialBadge>}
+      {/* <ProductBadge percent={product.percent} /> */}
     </div>
     <div className="flex-1 flex flex-col justify-start items-start w-full px-2 md:px-3 lg:px-4">
-      <ProductLabel label={product.label} />
+      <ProductLabel label={product.name} />
       <div className="flex flex-row flex-wrap items-center w-full text-left gap-2">
         <ProductDeliveryInfo
-          distanceKm={product.distanceKm}
-          avgDeliveryMin={product.avgDeliveryMin}
+          availableFrom={product.availableFrom || ""}
+          availableTo={product.availableTo || ""}
+          prepTimeMinutes={product.prepTimeMinutes}
         />
-        <ProductRating rating={product.rating} className="mb-2" />
+        {/* <ProductRating rating={product.rating} className="mb-2" /> */}
       </div>
-      <ProductPrice priceOld={product.priceOld} priceNew={product.priceNew} />
+      <ProductPrice price={product.price !== undefined ? String(product.price) : ""} />
     </div>
   </motion.div>
 );
