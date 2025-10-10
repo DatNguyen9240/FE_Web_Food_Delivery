@@ -59,7 +59,7 @@ const ProductImage = ({
   className = "",
 }: {
   src: string;
-  alt: string;
+  alt?: string;
   hoverSrc?: string;
   productId?: string;
   className?: string;
@@ -72,7 +72,7 @@ const ProductImage = ({
     >
       <Image
         src={src}
-        alt={alt}
+        alt={alt ?? "Product image"}
         fill
         className="
           object-cover rounded-t-lg
@@ -87,7 +87,7 @@ const ProductImage = ({
       {hoverSrc && (
         <Image
           src={hoverSrc}
-          alt={alt}
+          alt={alt ?? "Product image"}
           fill
           className="
             object-cover rounded-t-lg

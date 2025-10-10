@@ -52,8 +52,8 @@ const ProductCarousel: React.FC<ProductCarouselProps> = ({
           transform: `translateX(-${startIdx * cardWidth}px)`,
         }}
       >
-        {products.map((p) => (
-          <ProductCard product={p} key={p.menuItemId} />
+        {products.map((p, idx) => (
+          <ProductCard product={p} key={`${p.menuItemId ?? 'product'}-${idx}`} />
         ))}
       </div>
       <ButtonPrev onClick={handlePrev} size={"md"} hidden={startIdx <= 0} />

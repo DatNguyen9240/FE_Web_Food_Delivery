@@ -17,6 +17,7 @@ export interface CartItemResponse {
   menuItemId: string;
   menuItemName: string;
   priceAtAdd: number;
+  price?: number;
   quantity: number;
 }
 
@@ -26,6 +27,9 @@ export interface CartResponse {
   merchant?: { merchantId?: string; merchantName?: string };
   items: CartItemResponse[];
   subTotal?: number;
+  deliveryFee?: number;
+  serviceFee?: number;
+  discount?: number;
 }
 
 export interface CartRequestPayload {
