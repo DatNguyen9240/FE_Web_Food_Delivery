@@ -171,7 +171,7 @@ export default function FoodModal({
 
           {/* Quantity */}
           <div className="flex items-center gap-5 mb-6">
-            <div className="flex items-center border rounded-lg">
+            <div className="flex items-center rounded-lg">
               <ButtonMinus onClick={() => setQuantity((q) => Math.max(1, q - 1))} />
               <span className="px-4 text-lg font-medium text-black">{quantity}</span>
               <ButtonPlus onClick={() => setQuantity((q) => q + 1)} />

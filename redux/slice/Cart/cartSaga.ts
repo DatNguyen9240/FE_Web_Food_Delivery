@@ -41,9 +41,9 @@ function* updateCartItemQuantitySaga(action: { payload: UpdateQtyPayload }): Gen
   try {
     const { cartItemId, quantity, merchantId } = action.payload;
     // backend endpoint expects merchantId in path
-    const path = merchantId
-      ? `/Cart/${merchantId}/items/${cartItemId}/quantity`
-      : `/Cart/items/${cartItemId}/quantity`;
+    const path = 
+       `/Cart/${merchantId}/items/${cartItemId}/quantity`
+     
   // API expects the body to be a raw number representing the new quantity
   const response = (yield call(api.put, path, quantity)) as { data: unknown };
     yield put(updateCartItemQuantitySuccess(response.data));
@@ -57,7 +57,7 @@ function* deleteCartItemSaga(action: { payload: { merchantId?: string; cartItemI
   try {
     const { cartItemId, merchantId } = action.payload;
     const path = merchantId
-      ? `/Cart/${merchantId}/items/${cartItemId}`
+      ? `/Cart/items/${cartItemId}/${merchantId}`
       : `/Cart/items/${cartItemId}`;
     const response = (yield call(api.delete, path)) as { data: unknown };
     yield put(deleteCartItemSuccess(response.data));
