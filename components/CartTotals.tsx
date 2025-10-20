@@ -2,12 +2,14 @@
 import React from "react";
 import Button from "./Button";
 import MoneyVND from "./MoneyVND";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store/store";
+import { paymentCheckoutRequest } from "@/redux/slice/Payment/PaymentSlice";
 
 const CartTotals: React.FC = () => {
   const cartState = useSelector((s: RootState) => s.cart);
   const carts = cartState.carts || [];
+  const dispatch = useDispatch();
 
   // Compute subtotal by summing cart.subTotal if provided, otherwise items
   let subTotal = 0;
@@ -33,6 +35,14 @@ const CartTotals: React.FC = () => {
   }
 
   const total = subTotal + deliveryFee + serviceFee - discount;
+
+  const handleCheckout = () => {
+    if (!carts.length) return;
+    const merchantId = carts[0].merchant?.merchantId || carts[0].merchantId;
+    if (!merchantId) return;
+    // Gửi toàn bộ cart đầu tiên làm payload, bạn có thể tuỳ chỉnh lại nếu muốn
+    dispatch(paymentCheckoutRequest({ merchantId, payload: carts[0] }));
+  };
 
   return (
     <div className="bg-white rounded-lg border p-5 w-full max-w-xs shadow flex flex-col gap-2">
@@ -63,6 +73,7 @@ const CartTotals: React.FC = () => {
         size="md"
         className="bg-pink-600 hover:bg-pink-700 text-white w-full flex items-center justify-center font-semibold text-base py-2 mt-2"
         icon={<span className="text-xl mr-2">🛒</span>}
+        onClick={handleCheckout}
       >
         Thanh toán
       </Button>
