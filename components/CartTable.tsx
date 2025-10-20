@@ -17,6 +17,7 @@ type CartItemType = {
   subtotal: number;
   cartItemId?: string;
   merchantId?: string;
+  extraToppings?: string;
 };
 
 // API types to avoid `any`
@@ -111,7 +112,11 @@ const CartTableRow: React.FC<{ item: CartItemType }> = ({ item }) => {
           >
             {item.label}
           </div>
-          {/* rating removed */}
+          {item.extraToppings && (
+            <div className="text-xs text-gray-500 mt-1">
+              <span className="font-medium text-gray-600">Extra Toppings:</span> {item.extraToppings}
+            </div>
+          )}
         </div>
       </td>
       <td className="py-2 px-4 text-center">
@@ -166,16 +171,26 @@ const CartTable: React.FC = () => {
         {carts.map((c: CartApi, cartIndex: number) => {
           const merchantId = c.merchant?.merchantId || c.merchantId;
           const merchantName = c.merchant?.merchantName || c.merchantName || "Quán ăn";
-          const rows: CartItemType[] = (c.items || []).map((it: CartApiItem, idx: number) => ({
-            id: String(it.cartItemId ?? it.menuItemId ?? `cart-${cartIndex}-item-${idx}`),
-            cartItemId: it.cartItemId,
-            merchantId,
-            label: it.menuItemName || "",
-            image: "/sell_off/01.jpg",
-            price: it.priceAtAdd || it.price || 0,
-            quantity: it.quantity || 1,
-            subtotal: (it.priceAtAdd || it.price || 0) * (it.quantity || 1),
-          }));
+          const rows: CartItemType[] = (c.items || []).map((it: any, idx: number) => {
+            let extraToppings = "";
+            if (it.options && Array.isArray(it.options)) {
+              const toppingsOpt = it.options.find((opt: any) => opt.optionName === "Extra Toppings");
+              if (toppingsOpt && Array.isArray(toppingsOpt.selectedValues)) {
+                extraToppings = toppingsOpt.selectedValues.map((v: any) => v.valueName).join(", ");
+              }
+            }
+            return {
+              id: String(it.cartItemId ?? it.menuItemId ?? `cart-${cartIndex}-item-${idx}`),
+              cartItemId: it.cartItemId,
+              merchantId,
+              label: it.menuItemName || "",
+              image: "/sell_off/01.jpg",
+              price: it.priceAtAdd || it.price || 0,
+              quantity: it.quantity || 1,
+              subtotal: (it.priceAtAdd || it.price || 0) * (it.quantity || 1),
+              extraToppings,
+            };
+          });
 
           return (
             <div key={c.cartId} className="bg-white rounded-lg border p-4">

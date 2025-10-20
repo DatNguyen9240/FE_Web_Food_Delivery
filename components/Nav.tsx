@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 const menu = [
   { label: "Trang chủ", href: "/" },
-  { label: "Tin mới", href: "/tin-moi" },
   {
     label: "Thực đơn",
     href: "/products/category/an-sang",
