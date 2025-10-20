@@ -21,6 +21,16 @@ type CartItemType = {
 };
 
 // API types to avoid `any`
+
+type CartApiSelectedValue = {
+  valueName: string;
+};
+
+type CartApiOption = {
+  optionName: string;
+  selectedValues?: CartApiSelectedValue[];
+};
+
 type CartApiItem = {
   cartItemId?: string;
   menuItemId?: string;
@@ -28,6 +38,7 @@ type CartApiItem = {
   priceAtAdd?: number;
   price?: number;
   quantity?: number;
+  options?: CartApiOption[];
 };
 
 type CartApi = {
@@ -171,12 +182,12 @@ const CartTable: React.FC = () => {
         {carts.map((c: CartApi, cartIndex: number) => {
           const merchantId = c.merchant?.merchantId || c.merchantId;
           const merchantName = c.merchant?.merchantName || c.merchantName || "Quán ăn";
-          const rows: CartItemType[] = (c.items || []).map((it: any, idx: number) => {
+          const rows: CartItemType[] = (c.items || []).map((it: CartApiItem, idx: number) => {
             let extraToppings = "";
             if (it.options && Array.isArray(it.options)) {
-              const toppingsOpt = it.options.find((opt: any) => opt.optionName === "Extra Toppings");
+              const toppingsOpt = it.options.find((opt: CartApiOption) => opt.optionName === "Extra Toppings");
               if (toppingsOpt && Array.isArray(toppingsOpt.selectedValues)) {
-                extraToppings = toppingsOpt.selectedValues.map((v: any) => v.valueName).join(", ");
+                extraToppings = toppingsOpt.selectedValues.map((v: CartApiSelectedValue) => v.valueName).join(", ");
               }
             }
             return {

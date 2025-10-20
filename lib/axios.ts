@@ -15,7 +15,7 @@ function setCookie(name: string, value: string, days = 30) {
 }
 
 const api = axios.create({
-  baseURL: "http://160.187.1.18:5000/api/",
+  baseURL: "https://160.187.1.18/api/",
   headers: {
     "Content-Type": "application/json",
   },

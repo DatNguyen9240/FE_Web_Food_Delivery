@@ -6,7 +6,9 @@ import {
   paymentCheckoutFailure,
 } from "./PaymentSlice";
 
-function* paymentCheckoutSaga(action: { payload: { merchantId: string; payload: any } }): Generator {
+import type { CartResponse } from "../Cart/cartSlice";
+
+function* paymentCheckoutSaga(action: { payload: { merchantId: string; payload: CartResponse } }): Generator {
   try {
     const { merchantId, payload } = action.payload;
     const response = (yield call(api.post, `/payments/checkout/${merchantId}`, payload)) as { data: unknown };

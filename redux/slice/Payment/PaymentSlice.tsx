@@ -1,4 +1,6 @@
+
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { CartResponse } from "../Cart/cartSlice";
 
 export interface PaymentState {
   loading: boolean;
@@ -12,7 +14,7 @@ const initialState: PaymentState = {
   result: undefined,
 };
 
-export const paymentCheckoutRequest = createAction<{ merchantId: string; payload: any }>("payment/checkoutRequest");
+export const paymentCheckoutRequest = createAction<{ merchantId: string; payload: CartResponse }>("payment/checkoutRequest");
 export const paymentCheckoutSuccess = createAction<unknown>("payment/checkoutSuccess");
 export const paymentCheckoutFailure = createAction<string>("payment/checkoutFailure");
 
