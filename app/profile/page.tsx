@@ -9,6 +9,8 @@ import {
 } from "@/redux/slice/Auth/AuthSlice";
 
 import Image from "next/image";
+import AddressAutocomplete from "@/components/AddressAutocomplete";
+import { fetchAddresses, createAddress, updateAddress, deleteAddress, AddressItem } from "@/lib/address";
 
 // Gender helpers
 const genderToDisplay = (g: string) => {
@@ -36,6 +38,10 @@ export default function ProfilePage() {
     birthDate: user?.birthDate || "",
     gender: user?.gender || "",
   });
+  const [addresses, setAddresses] = useState<AddressItem[]>([]);
+  const [adding, setAdding] = useState(false);
+  const [newAddress, setNewAddress] = useState({ addressLabel: "", street: "" });
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
     setForm({
@@ -45,6 +51,16 @@ export default function ProfilePage() {
       birthDate: user?.birthDate || "",
       gender: genderToValue(user?.gender || ""),
     });
+    // fetch addresses
+    (async () => {
+      try {
+        const data = await fetchAddresses();
+        setAddresses(data || []);
+      } catch (err) {
+        // ignore for now
+        console.error("Failed to load addresses", err);
+      }
+    })();
   }, [user]);
 
   if (!user) {
@@ -100,7 +116,7 @@ export default function ProfilePage() {
             <span className="text-blue-500 text-base">
               {user.role || "Người dùng"}
             </span>
-            <span className="text-gray-400 text-sm">@{user.username}</span>
+            {/* <span className="text-gray-400 text-sm">@{user.gender}</span> */}
           </div>
         </div>
         {/* Removed Edit button from profile card */}
@@ -271,6 +287,117 @@ export default function ProfilePage() {
           </form>
         )}
       </div>
+
+        {/* Addresses */}
+        <div className="bg-white rounded-xl border border-gray-200 p-6 md:p-8 mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold text-gray-800">Địa chỉ</h2>
+            <button
+              className="px-3 py-1 rounded-lg bg-blue-600 text-white text-sm"
+              onClick={() => {
+                // start a fresh add: clear editing state and form
+                setEditingId(null);
+                setNewAddress({ addressLabel: "", street: "" });
+                setAdding((s) => !s);
+              }}
+            >
+              {adding ? "Hủy" : "Thêm địa chỉ"}
+            </button>
+          </div>
+
+          {addresses.length === 0 ? (
+            <div className="text-sm text-gray-500">Bạn chưa có địa chỉ nào.</div>
+          ) : (
+            <div className="grid gap-3">
+              {addresses.map((a) => (
+                <div
+                  key={a.addressId}
+                  className={`p-3 rounded-lg border ${a.isDefault ? "border-blue-500 bg-blue-50" : "border-gray-200"}`}
+                >
+                  <div className="text-sm font-medium text-gray-900">{a.addressLabel}</div>
+                  <div className="text-sm text-gray-600">{a.street}</div>
+                  <div className="mt-2 flex gap-2">
+                    <button
+                      className="text-sm text-blue-600"
+                      onClick={() => {
+                        setEditingId(a.addressId);
+                        setNewAddress({ addressLabel: a.addressLabel, street: a.street });
+                        setAdding(true);
+                      }}
+                    >
+                      Chỉnh sửa
+                    </button>
+                    <button
+                      className="text-sm text-red-600"
+                      onClick={async () => {
+                        if (!confirm("Xóa địa chỉ này?")) return;
+                        try {
+                          await deleteAddress(a.addressId);
+                          setAddresses((s) => s.filter((x) => x.addressId !== a.addressId));
+                        } catch (err) {
+                          console.error("Delete failed", err);
+                        }
+                      }}
+                    >
+                      Xóa
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {adding && (
+            <form
+              onSubmit={async (e) => {
+                e.preventDefault();
+                try {
+                  if (editingId) {
+                    const updated = await updateAddress(editingId, newAddress);
+                    setAddresses((s) => s.map((x) => (x.addressId === editingId ? updated : x)));
+                    setEditingId(null);
+                  } else {
+                    const created = await createAddress(newAddress);
+                    setAddresses((s) => [created, ...s]);
+                  }
+                  setNewAddress({ addressLabel: "", street: "" });
+                  setAdding(false);
+                } catch (err) {
+                  console.error("Failed to save address", err);
+                }
+              }}
+              className="mt-4 grid grid-cols-1 gap-3"
+            >
+              <input
+                placeholder="Nhãn (Ví dụ: Nhà, Cơ quan)"
+                value={newAddress.addressLabel}
+                onChange={(e) => setNewAddress((s) => ({ ...s, addressLabel: e.target.value }))}
+                className="p-2 border rounded-lg"
+                required
+              />
+
+              <AddressAutocomplete
+                value={newAddress.street}
+                onSelectAddress={(address) => setNewAddress((s) => ({ ...s, street: address }))}
+              />
+
+              <div className="flex gap-2">
+                <button className="flex-1 py-2 rounded-lg bg-blue-600 text-white">Lưu địa chỉ</button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAdding(false);
+                    setEditingId(null);
+                    setNewAddress({ addressLabel: "", street: "" });
+                  }}
+                  className="flex-1 py-2 rounded-lg bg-gray-200"
+                >
+                  Hủy
+                </button>
+              </div>
+            </form>
+          )}
+        </div>
     </div>
   );
 }
