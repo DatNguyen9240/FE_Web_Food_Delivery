@@ -21,6 +21,26 @@ export default function OrderPageClient() {
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // Local loose type for cart items (backend shapes vary between endpoints)
+  type LooseCartItem = {
+    cartItemId?: string;
+    menuItemId?: string;
+    menuItemName?: string;
+    productName?: string;
+    name?: string;
+    quantity?: number;
+    priceAtAdd?: number;
+    price?: number;
+    options?: Array<{
+      optionName?: string;
+      selectedValues?: Array<{ valueName?: string }>
+    }>;
+    note?: string;
+  };
+
+  // normalize items to LooseCartItem[] for rendering/calculation
+  const items: LooseCartItem[] = Array.isArray(cart?.items) ? (cart!.items as LooseCartItem[]) : [];
+
   useEffect(() => {
     (async () => {
       try {
@@ -35,7 +55,9 @@ export default function OrderPageClient() {
   if (!merchantId) return <div className="p-8">Chưa chọn quán</div>;
   if (!cart) return <div className="p-8">Không tìm thấy giỏ hàng cho quán này</div>;
 
-  const subtotal = (cart.subTotal != null) ? cart.subTotal : (Array.isArray(cart.items) ? cart.items.reduce((s:any,it:any)=>s + ((it.priceAtAdd ?? it.price ?? 0) * (it.quantity ?? 1)),0) : 0);
+  const subtotal = (cart.subTotal != null)
+    ? cart.subTotal
+    : items.reduce((s, it) => s + ((it.priceAtAdd ?? it.price ?? 0) * (it.quantity ?? 1)), 0);
 
   const handlePlaceOrder = async () => {
     if (!cart.cartId) return;
@@ -71,15 +93,15 @@ export default function OrderPageClient() {
         </div>
 
         <div className="border-t pt-3">
-          {Array.isArray(cart.items) && cart.items.map((it:any) => (
+          {items.length > 0 && items.map((it: LooseCartItem) => (
             <div key={it.cartItemId || it.menuItemId || JSON.stringify(it)} className="flex justify-between py-2">
               <div className="max-w-[60%]">
                 <div className="font-medium">{it.menuItemName || it.productName || it.name}</div>
                 <div className="text-sm text-gray-500">x{it.quantity}</div>
                 {it.options && Array.isArray(it.options) && (
                   <div className="text-xs text-gray-600 mt-1">
-                    {it.options.map((opt:any, idx:number) => (
-                      <div key={idx}><span className="font-medium">{opt.optionName}:</span> {Array.isArray(opt.selectedValues) ? opt.selectedValues.map((v:any)=>v.valueName).join(', ') : ''}</div>
+                    {it.options.map((opt, idx: number) => (
+                      <div key={idx}><span className="font-medium">{opt.optionName}:</span> {Array.isArray(opt.selectedValues) ? opt.selectedValues.map((v) => v.valueName).join(', ') : ''}</div>
                     ))}
                   </div>
                 )}

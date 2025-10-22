@@ -32,4 +32,6 @@ export async function deleteAddress(addressId: string) {
   return res.data;
 }
 
-export default { fetchAddresses, createAddress, updateAddress, deleteAddress };
+const addressClient = { fetchAddresses, createAddress, updateAddress, deleteAddress };
+
+export default addressClient;

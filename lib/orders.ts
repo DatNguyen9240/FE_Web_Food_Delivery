@@ -11,4 +11,6 @@ export async function createOrder(payload: CreateOrderPayload) {
   return res.data;
 }
 
-export default { createOrder };
+const ordersClient = { createOrder };
+
+export default ordersClient;
