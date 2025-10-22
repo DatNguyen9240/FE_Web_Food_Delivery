@@ -2,13 +2,15 @@
 
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store/store";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   updateUserRequest,
   getCurrentUserRequest,
 } from "@/redux/slice/Auth/AuthSlice";
 
 import Image from "next/image";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import AddressAutocomplete from "@/components/AddressAutocomplete";
 import { fetchAddresses, createAddress, updateAddress, deleteAddress, AddressItem } from "@/lib/address";
 
@@ -42,6 +44,9 @@ export default function ProfilePage() {
   const [adding, setAdding] = useState(false);
   const [newAddress, setNewAddress] = useState({ addressLabel: "", street: "" });
   const [editingId, setEditingId] = useState<string | null>(null);
+  const addButtonRef = useRef<HTMLButtonElement | null>(null);
+  const [showRadialArrow, setShowRadialArrow] = useState(false);
+  const [highlightAddBtn, setHighlightAddBtn] = useState(false);
 
   useEffect(() => {
     setForm({
@@ -62,6 +67,18 @@ export default function ProfilePage() {
       }
     })();
   }, [user]);
+
+  // Show the right-side radiating arrow after a short delay when there are no addresses
+  useEffect(() => {
+  setShowRadialArrow(addresses.length === 0);
+}, [addresses]);
+
+  // Clear highlight after a moment
+  useEffect(() => {
+    if (!highlightAddBtn) return;
+    const t = setTimeout(() => setHighlightAddBtn(false), 2500);
+    return () => clearTimeout(t);
+  }, [highlightAddBtn]);
 
   if (!user) {
     return (
@@ -293,12 +310,15 @@ export default function ProfilePage() {
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold text-gray-800">Địa chỉ</h2>
             <button
-              className="px-3 py-1 rounded-lg bg-blue-600 text-white text-sm"
+              ref={addButtonRef}
+              className={`px-3 py-1 rounded-lg text-sm transition relative ${highlightAddBtn ? 'bg-pink-500 text-white ring-4 ring-pink-200' : 'bg-blue-600 text-white'}`}
               onClick={() => {
                 // start a fresh add: clear editing state and form
                 setEditingId(null);
                 setNewAddress({ addressLabel: "", street: "" });
                 setAdding((s) => !s);
+                setShowRadialArrow(false);
+                setHighlightAddBtn(true);
               }}
             >
               {adding ? "Hủy" : "Thêm địa chỉ"}
@@ -347,25 +367,97 @@ export default function ProfilePage() {
             </div>
           )}
 
+          {/* Right-side radiating arrow guide */}
+    {showRadialArrow && (
+  <div className="fixed right-20 top-60 z-50">
+    <style>{`
+      .floating-btn {
+        position: relative;
+        width: 56px;
+        height: 56px;
+      }
+      .floating-btn .pulse {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: rgba(59, 130, 246, 0.15);
+        animation: pulse-fade 2s infinite;
+      }
+      .floating-btn .pulse:nth-child(2) {
+        animation-delay: .5s;
+      }
+      .floating-btn .center {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #ec4899; /* màu hồng */
+        color: white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transition: background 0.3s, transform 0.2s;
+      }
+      .floating-btn .center:hover {
+        background: #f43f5e; /* màu hồng đậm */
+        transform: scale(1.05);
+      }
+      @keyframes pulse-fade {
+        0% { transform: scale(0.9); opacity: 0.7 }
+        70% { transform: scale(1.6); opacity: 0 }
+        100% { opacity: 0 }
+      }
+    `}</style>
+
+      <div className="floating-btn">
+      <div className="pulse" />
+      <div className="pulse" />
+      <button
+        aria-label="Thêm địa chỉ mới"
+        onClick={() => {
+          setEditingId(null);
+          setNewAddress({ addressLabel: "", street: "" });
+          setAdding(true);
+          setShowRadialArrow(false);
+          setHighlightAddBtn(true);
+          setTimeout(() => {
+            addButtonRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+          }, 100);
+        }}
+        className="center"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+        </svg>
+      </button>
+    </div>
+  </div>
+)}
+
+
+
           {adding && (
             <form
               onSubmit={async (e) => {
-                e.preventDefault();
-                try {
-                  if (editingId) {
-                    const updated = await updateAddress(editingId, newAddress);
-                    setAddresses((s) => s.map((x) => (x.addressId === editingId ? updated : x)));
-                    setEditingId(null);
-                  } else {
-                    const created = await createAddress(newAddress);
-                    setAddresses((s) => [created, ...s]);
+                  e.preventDefault();
+                  try {
+                    if (editingId) {
+                      const updated = await updateAddress(editingId, newAddress);
+                      setAddresses((s) => s.map((x) => (x.addressId === editingId ? updated : x)));
+                      setEditingId(null);
+                      toast.success('Cập nhật địa chỉ thành công');
+                    } else {
+                      const created = await createAddress(newAddress);
+                      setAddresses((s) => [created, ...s]);
+                      toast.success('Thêm địa chỉ thành công');
+                    }
+                    setNewAddress({ addressLabel: "", street: "" });
+                    setAdding(false);
+                  } catch (err) {
+                    console.error("Failed to save address", err);
+                    toast.error('Lưu địa chỉ thất bại');
                   }
-                  setNewAddress({ addressLabel: "", street: "" });
-                  setAdding(false);
-                } catch (err) {
-                  console.error("Failed to save address", err);
-                }
-              }}
+                }}
               className="mt-4 grid grid-cols-1 gap-3"
             >
               <input

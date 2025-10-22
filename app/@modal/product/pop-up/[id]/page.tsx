@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchMenuItemByIdRequest } from "@/redux/slice/MenuItem/menuItemSlice";
 import { addToCartRequest } from "@/redux/slice/Cart/cartSlice";
+import { toast } from "react-toastify";
 import type { RootState } from "@/redux/store/store";
 import SectionTitle from "@/components/SectionTitle";
 import ProductImages from "@/components/ProductImages";
@@ -153,7 +154,7 @@ export default function FoodModal({
                             opt.isMultipleChoice
                           )
                         }
-                        className={`px-3 py-1 rounded-full border transition text-sm ${
+                        className={`cursor-pointer px-3 py-1 rounded-full border transition text-sm ${
                           isSelected
                             ? "bg-green-500 text-white border-green-500"
                             : "border-gray-300 text-gray-700 hover:border-green-400"
@@ -198,8 +199,11 @@ export default function FoodModal({
           {/* Actions */}
           <div className="flex gap-3 items-center">
             <AddToCartButton
-              className="flex-1 text-lg py-3"
-              onClick={handleAddToCart}
+              className="flex-1 text-lg py-3 cursor-pointer"
+              onClick={() => {
+                handleAddToCart();
+                toast.success("Đã thêm vào giỏ hàng");
+              }}
             />
             <WishlistButton />
           </div>
