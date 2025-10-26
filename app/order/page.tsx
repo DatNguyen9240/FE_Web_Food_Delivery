@@ -10,6 +10,7 @@ import { createOrder } from "@/lib/orders";
 import { paymentCheckoutRequest } from "@/redux/slice/Payment/PaymentSlice";
 import type { PaymentCheckoutResponse } from "@/redux/slice/Payment/PaymentSlice";
 import MoneyVND from "@/components/MoneyVND";
+import Image from "next/image";
 
 export default function OrderPageClient() {
   const params = useSearchParams();
@@ -18,7 +19,9 @@ export default function OrderPageClient() {
   const carts = useSelector((s: RootState) => s.cart.carts || []);
   const cart = useMemo(() => carts.find((c) => (c.merchant?.merchantId || c.merchantId) === merchantId), [carts, merchantId]);
   const dispatch = useDispatch();
-  const paymentResult = useSelector((s: RootState) => (s as any).Payment?.result as PaymentCheckoutResponse | undefined);
+  // extend RootState locally to access Payment slice without using `any`
+  type RootWithPayment = RootState & { Payment?: { result?: PaymentCheckoutResponse } };
+  const paymentResult = useSelector((s: RootWithPayment) => s.Payment?.result);
 
   const [addresses, setAddresses] = useState<AddressItem[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
@@ -205,7 +208,13 @@ export default function OrderPageClient() {
             <div className="text-sm text-gray-700 mb-2">Nhà cung cấp: {paymentResult.provider} — Mã tham chiếu: {paymentResult.providerReference}</div>
             <div className="flex items-center gap-4">
               {paymentResult.qrImage && (
-                <img src={paymentResult.qrImage} alt="QR" className="w-36 h-36 object-cover rounded" />
+                <Image
+                  src={paymentResult.qrImage}
+                  alt="QR"
+                  width={144}
+                  height={144}
+                  className="object-cover rounded"
+                />
               )}
               <div>
                 <div className="text-sm text-gray-600">Số tiền</div>
