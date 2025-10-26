@@ -4,6 +4,7 @@ export interface CreateOrderPayload {
   cartId: string;
   deliveryAddressId: string;
   notes?: string;
+  paymentMethod?: 'cash' | 'transfer';
 }
 
 export async function createOrder(payload: CreateOrderPayload) {

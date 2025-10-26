@@ -1,12 +1,14 @@
 "use client";
 
 import { useSearchParams, useRouter } from "next/navigation";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store/store";
 import { useEffect, useMemo, useState } from "react";
 import { fetchAddresses, AddressItem } from "@/lib/address";
 import { toast } from "react-toastify";
 import { createOrder } from "@/lib/orders";
+import { paymentCheckoutRequest } from "@/redux/slice/Payment/PaymentSlice";
+import type { PaymentCheckoutResponse } from "@/redux/slice/Payment/PaymentSlice";
 import MoneyVND from "@/components/MoneyVND";
 
 export default function OrderPageClient() {
@@ -15,11 +17,16 @@ export default function OrderPageClient() {
   const merchantId = params.get("merchantId");
   const carts = useSelector((s: RootState) => s.cart.carts || []);
   const cart = useMemo(() => carts.find((c) => (c.merchant?.merchantId || c.merchantId) === merchantId), [carts, merchantId]);
+  const dispatch = useDispatch();
+  const paymentResult = useSelector((s: RootState) => (s as any).Payment?.result as PaymentCheckoutResponse | undefined);
 
   const [addresses, setAddresses] = useState<AddressItem[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
   const [notes, setNotes] = useState("");
   const [loading, setLoading] = useState(false);
+  // payment method: default from query param 'payment' or 'cash'
+  const initialPayment = params.get("payment") === "transfer" ? "transfer" : "cash";
+  const [paymentMethod, setPaymentMethod] = useState<'cash' | 'transfer'>(initialPayment as 'cash' | 'transfer');
 
   // Local loose type for cart items (backend shapes vary between endpoints)
   type LooseCartItem = {
@@ -62,14 +69,21 @@ export default function OrderPageClient() {
   const handlePlaceOrder = async () => {
     if (!cart.cartId) return;
     if (!selectedAddress) {
-      alert("Vui lòng chọn địa chỉ giao hàng");
+      toast.warning("Vui lòng chọn địa chỉ giao hàng");
       return;
     }
     setLoading(true);
     try {
-      await createOrder({ cartId: cart.cartId, deliveryAddressId: selectedAddress, notes });
-      toast.success("Đơn hàng đã tạo thành công");
-      router.push("/");
+      if (paymentMethod === 'transfer') {
+        // use payment checkout flow which will create order + return payment info
+        dispatch(paymentCheckoutRequest({ merchantId: merchantId as string, payload: cart }));
+        toast.info('Đang tạo yêu cầu thanh toán...');
+        // don't navigate away — wait for payment result to appear in state
+      } else {
+        await createOrder({ cartId: cart.cartId, deliveryAddressId: selectedAddress, notes, paymentMethod });
+        toast.success("Đơn hàng đã tạo thành công");
+        router.push("/");
+      }
     } catch (err) {
       console.error(err);
       toast.error("Tạo đơn thất bại");
@@ -169,6 +183,41 @@ export default function OrderPageClient() {
           <label className="text-sm text-gray-500">Ghi chú</label>
           <textarea value={notes} onChange={(e) => setNotes(e.target.value)} className="w-full mt-1 p-2 border rounded-lg" rows={3} />
         </div>
+        <div className="mt-3">
+          <label className="block text-sm font-medium text-gray-700 mb-2">Phương thức thanh toán</label>
+          <div className="flex gap-4 items-center">
+            <label className="inline-flex items-center">
+              <input type="radio" name="payment" value="cash" checked={paymentMethod === 'cash'} onChange={() => setPaymentMethod('cash')} className="mr-2" />
+              <span className="font-medium">Tiền mặt</span>
+            </label>
+            <label className="inline-flex items-center">
+              <input type="radio" name="payment" value="transfer" checked={paymentMethod === 'transfer'} onChange={() => setPaymentMethod('transfer')} className="mr-2" />
+              <span className="font-medium">Chuyển khoản</span>
+            </label>
+          </div>
+          {paymentMethod === 'transfer' && (
+            <div className="text-xs text-gray-500 mt-2">Bạn sẽ nhận hướng dẫn chuyển khoản sau khi tạo đơn.</div>
+          )}
+        </div>
+        {paymentResult && (
+          <div className="bg-white rounded-lg border p-4 mb-4">
+            <h3 className="font-medium mb-2">Chi tiết thanh toán</h3>
+            <div className="text-sm text-gray-700 mb-2">Nhà cung cấp: {paymentResult.provider} — Mã tham chiếu: {paymentResult.providerReference}</div>
+            <div className="flex items-center gap-4">
+              {paymentResult.qrImage && (
+                <img src={paymentResult.qrImage} alt="QR" className="w-36 h-36 object-cover rounded" />
+              )}
+              <div>
+                <div className="text-sm text-gray-600">Số tiền</div>
+                <div className="font-semibold text-lg"><MoneyVND value={paymentResult.amount} /></div>
+                <div className="mt-2">
+                  <a href={paymentResult.paymentUrl} target="_blank" rel="noreferrer" className="px-3 py-2 bg-pink-600 text-white rounded-md inline-block">Mở trang thanh toán</a>
+                </div>
+              </div>
+            </div>
+            <div className="text-xs text-gray-500 mt-3">Mã đơn: {paymentResult.orderRef}</div>
+          </div>
+        )}
       </div>
 
       <div className="flex justify-end">

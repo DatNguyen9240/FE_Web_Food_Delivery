@@ -2,10 +2,20 @@
 import { createAction, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { CartResponse } from "../Cart/cartSlice";
 
+export interface PaymentCheckoutResponse {
+  provider: string;
+  providerReference: string;
+  paymentUrl: string;
+  qrImage?: string | null;
+  amount: number;
+  orderRef: string;
+  orderId: string;
+}
+
 export interface PaymentState {
   loading: boolean;
   error: string | null;
-  result?: unknown;
+  result?: PaymentCheckoutResponse | undefined;
 }
 
 const initialState: PaymentState = {
@@ -15,7 +25,7 @@ const initialState: PaymentState = {
 };
 
 export const paymentCheckoutRequest = createAction<{ merchantId: string; payload: CartResponse }>("payment/checkoutRequest");
-export const paymentCheckoutSuccess = createAction<unknown>("payment/checkoutSuccess");
+export const paymentCheckoutSuccess = createAction<PaymentCheckoutResponse>("payment/checkoutSuccess");
 export const paymentCheckoutFailure = createAction<string>("payment/checkoutFailure");
 
 const paymentSlice = createSlice({
@@ -28,7 +38,7 @@ const paymentSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(paymentCheckoutSuccess, (state, action: PayloadAction<unknown>) => {
+      .addCase(paymentCheckoutSuccess, (state, action: PayloadAction<PaymentCheckoutResponse>) => {
         state.loading = false;
         state.result = action.payload;
       })
